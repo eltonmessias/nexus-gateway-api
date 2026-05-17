@@ -1,0 +1,46 @@
+spring:
+  application:
+    name: nexus-cache-layer
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD}
+      timeout: 2000ms
+      lettuce:
+        pool:
+          max-active: 16
+          max-idle: 8
+          min-idle: 2
+
+nexus:
+  cache:
+    default-ttl: 300s
+    namespaces:
+      flags:
+        ttl: 30s
+      search-results:
+        ttl: 60s
+      user-sessions:
+        ttl: 3600s
+      api-clients:
+        ttl: 600s
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      redis-cb:
+        sliding-window-size: 10
+        failure-rate-threshold: 50
+        wait-duration-in-open-state: 10s
+        permitted-number-of-calls-in-half-open-state: 3
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, metrics, prometheus
+  metrics:
+    export:
+      prometheus:
+        enabled: true
