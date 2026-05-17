@@ -1,0 +1,297 @@
+nexus-gateway-parent/
+│
+├── pom.xml                                          # Parent POM — versões, plugins, BOM
+│
+├── nexus-commons/
+│   ├── pom.xml
+│   └── src/
+│       ├── main/java/com/nexus/commons/
+│       │   ├── dto/
+│       │   │   ├── request/
+│       │   │   │   ├── JobRequest.java
+│       │   │   │   ├── FlagEvaluateRequest.java
+│       │   │   │   └── SearchRequest.java
+│       │   │   └── response/
+│       │   │       ├── JobResponse.java
+│       │   │       ├── FlagEvaluateResponse.java
+│       │   │       └── SearchResponse.java
+│       │   ├── event/
+│       │   │   ├── JobCreatedEvent.java
+│       │   │   ├── JobCompletedEvent.java
+│       │   │   ├── FlagChangedEvent.java
+│       │   │   └── CacheInvalidatedEvent.java
+│       │   ├── exception/
+│       │   │   ├── NexusException.java
+│       │   │   ├── RateLimitException.java
+│       │   │   ├── FlagNotFoundException.java
+│       │   │   ├── JobNotFoundException.java
+│       │   │   └── SearchIndexException.java
+│       │   ├── validation/
+│       │   │   └── ValidUUID.java
+│       │   └── util/
+│       │       ├── HashUtil.java
+│       │       ├── JsonUtil.java
+│       │       └── DateUtil.java
+│       └── test/java/com/nexus/commons/
+│           └── util/
+│               └── HashUtilTest.java
+│
+├── nexus-cache-layer/
+│   ├── pom.xml
+│   └── src/
+│       ├── main/
+│       │   ├── java/com/nexus/cache/
+│       │   │   ├── NexusCacheLayerApplication.java
+│       │   │   ├── config/
+│       │   │   │   ├── RedisConfig.java
+│       │   │   │   └── CacheConfig.java
+│       │   │   ├── service/
+│       │   │   │   ├── CacheService.java                  # interface
+│       │   │   │   └── impl/
+│       │   │   │       └── RedisCacheService.java
+│       │   │   ├── strategy/
+│       │   │   │   ├── CacheAsideStrategy.java
+│       │   │   │   └── WriteThroughStrategy.java
+│       │   │   ├── invalidation/
+│       │   │   │   ├── TagBasedInvalidator.java
+│       │   │   │   └── PubSubInvalidator.java
+│       │   │   └── metrics/
+│       │   │       └── CacheMetrics.java
+│       │   └── resources/
+│       │       └── application.yml
+│       └── test/java/com/nexus/cache/
+│           ├── service/
+│           │   └── RedisCacheServiceIT.java              # Testcontainers
+│           └── strategy/
+│               └── CacheAsideStrategyTest.java
+│
+├── nexus-gateway/
+│   ├── pom.xml
+│   └── src/
+│       ├── main/
+│       │   ├── java/com/nexus/gateway/
+│       │   │   ├── NexusGatewayApplication.java
+│       │   │   ├── config/
+│       │   │   │   ├── SecurityConfig.java
+│       │   │   │   ├── RouteConfig.java
+│       │   │   │   └── RedisConfig.java
+│       │   │   ├── filter/
+│       │   │   │   ├── AuthenticationFilter.java
+│       │   │   │   ├── RateLimitFilter.java
+│       │   │   │   ├── RoutingFilter.java
+│       │   │   │   ├── TracingFilter.java
+│       │   │   │   └── LoggingFilter.java
+│       │   │   ├── ratelimit/
+│       │   │   │   ├── RateLimiter.java                  # interface
+│       │   │   │   ├── SlidingWindowRateLimiter.java
+│       │   │   │   └── scripts/
+│       │   │   │       └── rate_limiter.lua
+│       │   │   ├── auth/
+│       │   │   │   ├── JwtValidator.java
+│       │   │   │   └── JwtProperties.java
+│       │   │   ├── admin/
+│       │   │   │   ├── controller/
+│       │   │   │   │   ├── ClientController.java
+│       │   │   │   │   └── RouteController.java
+│       │   │   │   ├── service/
+│       │   │   │   │   ├── ClientService.java
+│       │   │   │   │   └── RouteService.java
+│       │   │   │   └── repository/
+│       │   │   │       ├── ClientRepository.java
+│       │   │   │       └── RouteRepository.java
+│       │   │   ├── domain/
+│       │   │   │   ├── ApiClient.java                    # @Entity
+│       │   │   │   └── RouteConfig.java                  # @Entity
+│       │   │   └── metrics/
+│       │   │       └── GatewayMetrics.java
+│       │   └── resources/
+│       │       ├── application.yml
+│       │       └── db/migration/
+│       │           ├── V1__create_gateway_schema.sql
+│       │           └── V2__insert_default_routes.sql
+│       └── test/java/com/nexus/gateway/
+│           ├── filter/
+│           │   ├── RateLimitFilterIT.java                # Testcontainers Redis
+│           │   └── AuthenticationFilterTest.java
+│           └── ratelimit/
+│               └── SlidingWindowRateLimiterIT.java
+│
+├── nexus-feature-flags/
+│   ├── pom.xml
+│   └── src/
+│       ├── main/
+│       │   ├── java/com/nexus/flags/
+│       │   │   ├── NexusFeatureFlagsApplication.java
+│       │   │   ├── config/
+│       │   │   │   ├── SecurityConfig.java
+│       │   │   │   └── SseConfig.java
+│       │   │   ├── controller/
+│       │   │   │   ├── FlagEvaluationController.java     # /api/v1/flags/evaluate
+│       │   │   │   ├── FlagStreamController.java         # /api/v1/flags/stream (SSE)
+│       │   │   │   └── admin/
+│       │   │   │       ├── FlagAdminController.java
+│       │   │   │       └── SegmentAdminController.java
+│       │   │   ├── service/
+│       │   │   │   ├── FlagEvaluationService.java        # interface
+│       │   │   │   ├── FlagAdminService.java             # interface
+│       │   │   │   └── impl/
+│       │   │   │       ├── FlagEvaluationServiceImpl.java
+│       │   │   │       └── FlagAdminServiceImpl.java
+│       │   │   ├── evaluator/
+│       │   │   │   ├── FlagEvaluator.java
+│       │   │   │   ├── RolloutEvaluator.java             # MurmurHash3
+│       │   │   │   ├── TargetingEvaluator.java
+│       │   │   │   └── VariantSelector.java
+│       │   │   ├── domain/
+│       │   │   │   ├── FeatureFlag.java                  # @Entity
+│       │   │   │   ├── FlagVariant.java                  # @Entity
+│       │   │   │   ├── TargetingSegment.java             # @Entity
+│       │   │   │   ├── FlagTargetingRule.java            # @Entity
+│       │   │   │   └── FlagEvaluationLog.java            # @Entity
+│       │   │   ├── repository/
+│       │   │   │   ├── FeatureFlagRepository.java
+│       │   │   │   ├── FlagVariantRepository.java
+│       │   │   │   ├── TargetingSegmentRepository.java
+│       │   │   │   └── FlagEvaluationLogRepository.java
+│       │   │   ├── sse/
+│       │   │   │   ├── FlagChangePublisher.java
+│       │   │   │   └── SseEmitterRegistry.java
+│       │   │   ├── cache/
+│       │   │   │   └── FlagCacheManager.java
+│       │   │   └── metrics/
+│       │   │       └── FlagMetrics.java
+│       │   └── resources/
+│       │       ├── application.yml
+│       │       └── db/migration/
+│       │           ├── V1__create_flags_schema.sql
+│       │           ├── V2__create_variants_table.sql
+│       │           ├── V3__create_segments_table.sql
+│       │           └── V4__create_evaluation_log.sql
+│       └── test/java/com/nexus/flags/
+│           ├── evaluator/
+│           │   ├── RolloutEvaluatorTest.java
+│           │   └── TargetingEvaluatorTest.java
+│           ├── service/
+│           │   └── FlagEvaluationServiceIT.java          # Testcontainers PG + Redis
+│           └── controller/
+│               └── FlagEvaluationControllerIT.java
+│
+├── nexus-job-queue/
+│   ├── pom.xml
+│   └── src/
+│       ├── main/
+│       │   ├── java/com/nexus/jobs/
+│       │   │   ├── NexusJobQueueApplication.java
+│       │   │   ├── config/
+│       │   │   │   ├── KafkaConfig.java
+│       │   │   │   └── RetryConfig.java
+│       │   │   ├── controller/
+│       │   │   │   └── JobController.java                # /api/v1/jobs
+│       │   │   ├── service/
+│       │   │   │   ├── JobService.java                   # interface
+│       │   │   │   └── impl/
+│       │   │   │       └── JobServiceImpl.java
+│       │   │   ├── producer/
+│       │   │   │   └── JobEventProducer.java             # @KafkaProducer
+│       │   │   ├── consumer/
+│       │   │   │   ├── JobEventConsumer.java             # @KafkaListener
+│       │   │   │   └── DlqConsumer.java                  # nexus.jobs.dlq
+│       │   │   ├── worker/
+│       │   │   │   ├── JobHandler.java                   # interface
+│       │   │   │   ├── JobHandlerRegistry.java
+│       │   │   │   └── handlers/
+│       │   │   │       ├── SendEmailHandler.java
+│       │   │   │       └── GenerateReportHandler.java
+│       │   │   ├── retry/
+│       │   │   │   └── JobRetryPolicy.java
+│       │   │   ├── domain/
+│       │   │   │   ├── Job.java                          # @Entity
+│       │   │   │   ├── JobExecutionHistory.java          # @Entity
+│       │   │   │   └── JobType.java                      # @Entity
+│       │   │   ├── repository/
+│       │   │   │   ├── JobRepository.java
+│       │   │   │   ├── JobExecutionHistoryRepository.java
+│       │   │   │   └── JobTypeRepository.java
+│       │   │   └── metrics/
+│       │   │       └── JobMetrics.java
+│       │   └── resources/
+│       │       ├── application.yml
+│       │       └── db/migration/
+│       │           ├── V1__create_jobs_schema.sql
+│       │           ├── V2__create_job_history_table.sql
+│       │           └── V3__create_job_types_table.sql
+│       └── test/java/com/nexus/jobs/
+│           ├── consumer/
+│           │   └── JobEventConsumerIT.java               # Testcontainers Kafka + PG
+│           ├── retry/
+│           │   └── JobRetryPolicyIT.java
+│           └── controller/
+│               └── JobControllerIT.java
+│
+├── nexus-search-engine/
+│   ├── pom.xml
+│   └── src/
+│       ├── main/
+│       │   ├── java/com/nexus/search/
+│       │   │   ├── NexusSearchEngineApplication.java
+│       │   │   ├── config/
+│       │   │   │   └── SearchConfig.java
+│       │   │   ├── controller/
+│       │   │   │   ├── SearchController.java             # /api/v1/search
+│       │   │   │   └── admin/
+│       │   │   │       ├── IndexAdminController.java
+│       │   │   │       └── DocumentAdminController.java
+│       │   │   ├── service/
+│       │   │   │   ├── SearchService.java                # interface
+│       │   │   │   ├── IndexService.java                 # interface
+│       │   │   │   └── impl/
+│       │   │   │       ├── SearchServiceImpl.java
+│       │   │   │       └── IndexServiceImpl.java
+│       │   │   ├── pipeline/
+│       │   │   │   ├── indexing/
+│       │   │   │   │   ├── TextAnalyser.java
+│       │   │   │   │   ├── Stemmer.java                  # Lucene
+│       │   │   │   │   └── StopWordFilter.java
+│       │   │   │   └── query/
+│       │   │   │       ├── QueryParser.java
+│       │   │   │       ├── BM25Scorer.java               # implementação própria
+│       │   │   │       └── FacetAggregator.java
+│       │   │   ├── domain/
+│       │   │   │   ├── SearchIndex.java                  # @Entity
+│       │   │   │   ├── SearchDocument.java               # @Entity
+│       │   │   │   └── SearchQueryLog.java               # @Entity
+│       │   │   ├── repository/
+│       │   │   │   ├── SearchIndexRepository.java
+│       │   │   │   ├── SearchDocumentRepository.java
+│       │   │   │   └── SearchQueryLogRepository.java
+│       │   │   ├── cache/
+│       │   │   │   └── QueryCacheManager.java
+│       │   │   └── metrics/
+│       │   │       └── SearchMetrics.java
+│       │   └── resources/
+│       │       ├── application.yml
+│       │       └── db/migration/
+│       │           ├── V1__create_search_schema.sql
+│       │           ├── V2__create_documents_table.sql
+│       │           └── V3__create_gin_index.sql
+│       └── test/java/com/nexus/search/
+│           ├── pipeline/
+│           │   ├── BM25ScorerTest.java
+│           │   └── QueryParserTest.java
+│           ├── service/
+│           │   └── SearchServiceIT.java                  # Testcontainers PG
+│           └── controller/
+│               └── SearchControllerIT.java
+│
+└── infra/
+    ├── docker-compose.yml
+    ├── init-schemas.sql
+    ├── prometheus.yml
+    └── grafana/
+        ├── dashboards/
+        │   ├── nexus-gateway.json
+        │   ├── nexus-flags.json
+        │   ├── nexus-jobs.json
+        │   └── nexus-search.json
+        └── datasources/
+            └── prometheus.yml

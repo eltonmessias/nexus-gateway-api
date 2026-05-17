@@ -1,0 +1,38 @@
+# Arrancar toda a infraestrutura
+docker-compose up -d
+
+# Ver logs de um serviço específico
+docker-compose logs -f kafka
+
+# Parar sem apagar volumes (dados preservados)
+docker-compose stop
+
+# Apagar tudo incluindo volumes (reset completo)
+docker-compose down -v
+
+# Verificar health de todos os containers
+docker-compose ps
+
+# Aceder ao PostgreSQL directamente
+docker exec -it nexus-postgres psql -U nexus -d nexus
+
+# Listar tópicos Kafka
+docker exec -it nexus-kafka kafka-topics --list --bootstrap-server localhost:9092
+
+# Consumir mensagens de um tópico para debug
+docker exec -it nexus-kafka kafka-console-consumer \
+  --bootstrap-server localhost:9092 \
+  --topic nexus.jobs \
+  --from-beginning
+
+# Verificar memória Redis
+docker exec -it nexus-redis redis-cli info memory
+
+
+
+1. nexus-commons          ← base de tudo, sem dependências
+2. nexus-cache-layer      ← depende só do commons
+3. nexus-gateway          ← depende do commons + cache
+4. nexus-feature-flags    ← depende do commons + cache
+5. nexus-job-queue        ← depende do commons + cache
+6. nexus-search-engine    ← depende do commons + cache

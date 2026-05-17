@@ -1,0 +1,29 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  - job_name: nexus-gateway
+    static_configs:
+      - targets: ['host.docker.internal:8080']
+    metrics_path: /actuator/prometheus
+
+  - job_name: nexus-feature-flags
+    static_configs:
+      - targets: ['host.docker.internal:8081']
+    metrics_path: /actuator/prometheus
+
+  - job_name: nexus-job-queue
+    static_configs:
+      - targets: ['host.docker.internal:8082']
+    metrics_path: /actuator/prometheus
+
+  - job_name: nexus-search-engine
+    static_configs:
+      - targets: ['host.docker.internal:8083']
+    metrics_path: /actuator/prometheus
+
+  - job_name: nexus-cache-layer
+    static_configs:
+      - targets: ['host.docker.internal:8085']
+    metrics_path: /actuator/prometheus
