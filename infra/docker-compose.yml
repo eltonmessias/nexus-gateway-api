@@ -35,7 +35,18 @@ services:
       timeout: 3s
       retries: 5
 
-  #----------- Kafka
+  # ── Zookeeper (requerido pelo Kafka) ───────────────────────
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.6.0
+    container_name: nexus-zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "2181:2181"
+
+
+  #----------- Kafka ---------------------------
   kafka:
     image: confluentinc/cp-kafka:7.6.0
     container_name: nexus-kafka
