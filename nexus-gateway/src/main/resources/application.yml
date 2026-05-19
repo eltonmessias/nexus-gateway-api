@@ -1,0 +1,75 @@
+spring:
+  application:
+    name: nexus-gateway
+
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:5432/nexus
+    username: ${DB_USER:nexus}
+    password: ${DB_PASS:nexus_dev}
+    hikari:
+      maximum-pool-size: 10
+      schema: nexus_gateway
+
+    jpa:
+      hibernate:
+        ddl-auto: validate
+      properties:
+        hibernate:
+          default_schema: nexus_gateway
+
+    flyway:
+      schemas: nexus_gateway
+      locations: classpath:db/migration
+
+    data:
+      redis:
+        host: ${REDIS_HOST:localhost}
+        port: ${REDIS_PORT:6379}
+
+    cloud:
+      gateway:
+        routes:
+          - id: feature-flags
+            uri: http://${FLAGS_HOST:localhost}:8081
+            predicates:
+              - Path=/api/v1/flags/**
+            filters:
+              - name: RateLimit
+                args:
+                  limit: 200
+                  window: 60
+          - id: job-queue
+            uri: http://${JOBS_HOST:localhost}:8082
+            predicates:
+              - Path=/api/v1/jobs/**
+            filters:
+              - name: RateLimit
+                args:
+                  limit: 100
+                  window: 60
+          - id: search-engine
+            uri: http://${SEARCH_HOST:localhost}:8083
+            predicates:
+              - Path=/api/v1/search/**
+            filters:
+              - name: RateLimit
+                args:
+                  limit: 500
+                  window: 60
+
+  nexus:
+    jwt:
+      secret: ${JWT_SECRET:nexus-dev-secret-change-in-production}
+      expiration: 86400000  # 24h em ms
+    rate-limit:
+      default-rpm: 100
+      default-burst: 20
+
+  management:
+    endpoints:
+      web:
+        exposure:
+          include: health,metrics,prometheus
+    tracing:
+      sampling:
+        probability: 1.0
