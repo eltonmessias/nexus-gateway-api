@@ -7,7 +7,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>nexus-commons</module>
-        <!--        <module>nexus-cache-layer</module>-->
+        <module>nexus-cache-layer</module>
 <!--        <module>nexus-gateway</module>-->
 <!--        <module>nexus-feature-flags</module>-->
 <!--        <module>nexus-job-queue</module>-->

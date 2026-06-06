@@ -15,7 +15,6 @@
     </option>
     <option name="ignoredFiles">
       <set>
-        <option value="$PROJECT_DIR$/nexus-cache-layer/pom.xml" />
         <option value="$PROJECT_DIR$/nexus-feature-flags/pom.xml" />
         <option value="$PROJECT_DIR$/nexus-gateway/pom.xml" />
         <option value="$PROJECT_DIR$/nexus-job-queue/pom.xml" />
