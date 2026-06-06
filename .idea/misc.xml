@@ -16,7 +16,6 @@
     <option name="ignoredFiles">
       <set>
         <option value="$PROJECT_DIR$/nexus-gateway/pom.xml" />
-        <option value="$PROJECT_DIR$/nexus-job-queue/pom.xml" />
         <option value="$PROJECT_DIR$/nexus-search-engine/pom.xml" />
       </set>
     </option>

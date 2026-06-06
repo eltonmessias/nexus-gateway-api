@@ -9,8 +9,8 @@
         <module>nexus-commons</module>
         <module>nexus-cache-layer</module>
         <module>nexus-feature-flags</module>
+        <module>nexus-job-queue</module>
         <!--        <module>nexus-gateway</module>-->
-<!--        <module>nexus-job-queue</module>-->
 <!--        <module>nexus-search-engine</module>-->
     </modules>
 
