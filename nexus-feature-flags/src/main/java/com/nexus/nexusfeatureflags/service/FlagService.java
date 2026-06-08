@@ -10,6 +10,7 @@ public interface FlagService {
 
     FlagEvaluateResponse evaluate(String flagKey, String environment);
     Flag create(Flag flag);
+    Flag getById(UUID id);
     Flag update(UUID id, Flag flag);
     void delete(UUID id);
     List<Flag> findAll();

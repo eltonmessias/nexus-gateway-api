@@ -11,7 +11,7 @@
         <module>nexus-feature-flags</module>
         <module>nexus-job-queue</module>
         <module>nexus-search-engine</module>
-        <!--        <module>nexus-gateway</module>-->
+        <module>nexus-gateway</module>
     </modules>
 
     <groupId>com.nexus</groupId>
@@ -62,6 +62,21 @@
             <dependency>
                 <groupId>com.nexus</groupId>
                 <artifactId>nexus-cache-layer</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.nexus</groupId>
+                <artifactId>nexus-feature-flags</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.nexus</groupId>
+                <artifactId>nexus-job-queue</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.nexus</groupId>
+                <artifactId>nexus-search-engine</artifactId>
                 <version>${project.version}</version>
             </dependency>
         </dependencies>

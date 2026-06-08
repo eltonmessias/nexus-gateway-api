@@ -48,6 +48,11 @@ public class FlagServiceImpl implements FlagService {
     }
 
     @Override
+    public Flag getById(UUID id) {
+        return flagRepository.findById(id).orElseThrow(() -> new FlagNotFoundException(id.toString()));
+    }
+
+    @Override
     public Flag update(UUID id, Flag flag) {
         Flag oldFlag = flagRepository.findById(id).orElseThrow(() -> new FlagNotFoundException("Flag not found"));
         oldFlag.setFlagKey(flag.getFlagKey());
