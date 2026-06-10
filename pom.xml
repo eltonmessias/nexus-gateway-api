@@ -12,6 +12,7 @@
         <module>nexus-job-queue</module>
         <module>nexus-search-engine</module>
         <module>nexus-gateway</module>
+        <module>nexus-iam</module>
     </modules>
 
     <groupId>com.nexus</groupId>
@@ -78,6 +79,12 @@
                 <groupId>com.nexus</groupId>
                 <artifactId>nexus-search-engine</artifactId>
                 <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>1.18.32</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

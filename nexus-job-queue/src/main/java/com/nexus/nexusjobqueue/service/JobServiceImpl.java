@@ -31,7 +31,11 @@ public class JobServiceImpl implements JobService {
 
     @Override
     public JobResponse submit(JobRequest request) {
-        Job job = new Job(request.type(), request.payload(), request.priority());
+        Job job = Job.builder()
+                .type(request.type())
+                .payload(request.payload())
+                .priority(request.priority())
+                .build();
         jobRepository.save(job);
         jobEventProducer.publishJobCreatedEvent(new JobCreatedEvent(
                 job.getId().toString(),

@@ -1,62 +1,32 @@
 package com.nexus.nexusfeatureflags.model;
 
-import org.springframework.data.annotation.Id;
+import jakarta.persistence.*;
+import lombok.*;
 
 import java.util.UUID;
 
+@Entity
+@Table(name = "flags")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Flag {
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+
+    @Column(nullable = false, unique = true)
     private String flagKey;
-    private String value = "default";
+
+    @Column(nullable = false)
+    private String value;
+
+    @Column(nullable = false)
     private String environment;
+
+    @Column(nullable = false)
     private boolean enabled;
 
-    public Flag(String flagKey, String value, String environment, boolean enabled) {
-        this.flagKey = flagKey;
-        this.value = value;
-        this.environment = environment;
-        this.enabled = enabled;
-    }
-    public Flag(){}
 
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public String getFlagKey() {
-        return flagKey;
-    }
-
-    public void setFlagKey(String flagKey) {
-        this.flagKey = flagKey;
-    }
-
-    public String getValue() {
-        return value;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
-    }
-
-    public String getEnvironment() {
-        return environment;
-    }
-
-    public void setEnvironment(String environment) {
-        this.environment = environment;
-    }
-
-    public boolean isEnabled() {
-        return enabled;
-    }
-
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
-    }
 }
