@@ -9,8 +9,8 @@ import java.util.UUID;
 public interface TeamRepository {
     Team save(Team team);
     Optional<Team> findById(UUID id);
-    Optional<Team> findByOrganizationId(UUID organizationId);
-    Optional<Team> findByName(String name);
+    List<Team> findByOrganizationId(UUID organizationId);
     List<Team> findAll();
     void deleteById(UUID id);
+    boolean existsById(UUID id);
 }

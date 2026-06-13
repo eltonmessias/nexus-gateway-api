@@ -30,10 +30,6 @@ public class TeamUseCaseImpl implements TeamUseCase {
         return teamService.findById(id);
     }
 
-    @Override
-    public Team findByName(String name) {
-        return teamService.findByName(name);
-    }
 
     @Override
     public List<Team> findAll() {

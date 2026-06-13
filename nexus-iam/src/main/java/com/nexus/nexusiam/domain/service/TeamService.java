@@ -26,10 +26,6 @@ public class TeamService {
         return teamRepository.findById(id).orElseThrow(() -> new TeamNotFoundException(id));
     }
 
-    public Team findByName(String name) {
-        return teamRepository.findByName(name).orElse(null);
-    }
-
     public List<Team> findAll() {
         return teamRepository.findAll();
     }

@@ -9,7 +9,6 @@ public interface TeamUseCase {
     Team create(Team team);
     Team update(UUID id, Team team);
     Team findById(UUID id);
-    Team findByName(String name);
     List<Team> findAll();
     void delete(UUID id);
 

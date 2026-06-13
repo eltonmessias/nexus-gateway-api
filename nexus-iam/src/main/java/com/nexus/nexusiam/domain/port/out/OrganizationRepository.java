@@ -9,7 +9,8 @@ import java.util.UUID;
 public interface OrganizationRepository {
     Organization save(Organization organization);
     Optional<Organization> findById(UUID id);
-    Optional<Organization> findBySlug(String name);
+    Optional<Organization> findBySlug(String slug);
     List<Organization> findAll();
     void deleteById(UUID id);
+    Boolean existsById(UUID id);
 }
