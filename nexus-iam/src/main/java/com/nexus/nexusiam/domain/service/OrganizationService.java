@@ -10,31 +10,26 @@ import java.util.List;
 import java.util.UUID;
 
 @RequiredArgsConstructor
-public class OrganizationService implements OrganizationUseCase {
+public class OrganizationService {
     private final OrganizationRepository organizationRepository;
 
-    @Override
     public Organization create(Organization organization) {
         return organizationRepository.save(organization);
     }
 
-    @Override
     public Organization update(UUID id, Organization organization) {
         organizationRepository.findById(id).orElseThrow(() -> new OrganizationNotFoundException(id));
         return organizationRepository.save(organization);
     }
 
-    @Override
     public Organization findById(UUID id) {
         return organizationRepository.findById(id).orElseThrow(() -> new OrganizationNotFoundException(id));
     }
 
-    @Override
     public List<Organization> findAll() {
         return organizationRepository.findAll();
     }
 
-    @Override
     public void delete(UUID id) {
         organizationRepository.findById(id).orElseThrow(() -> new OrganizationNotFoundException(id));
         organizationRepository.deleteById(id);
