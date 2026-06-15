@@ -14,7 +14,7 @@ public interface OrganizationMapper {
     @Mapping(target = "slug", source = "slug", qualifiedByName = "slugToString")
     OrganizationEntity toEntity(Organization domain);
 
-    @Mapping(target = "slug", source = "slug", qualifiedByName = "stringToString")
+    @Mapping(target = "slug", source = "slug", qualifiedByName = "stringToSlug")
     Organization toDomain(OrganizationEntity entity);
 
     @Named("slugToString")

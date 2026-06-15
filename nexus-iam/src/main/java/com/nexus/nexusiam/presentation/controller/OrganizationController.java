@@ -43,7 +43,7 @@ public class OrganizationController {
         return ResponseEntity.ok(mapper.toResponse(organizationUseCase.update(id, mapper.toDomain(request))));
     }
 
-    @DeleteMapping("/{id]")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable UUID id){
         organizationUseCase.delete(id);
         return ResponseEntity.noContent().build();
