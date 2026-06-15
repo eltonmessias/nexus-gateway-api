@@ -4,9 +4,11 @@ import com.nexus.nexusiam.domain.model.User;
 import com.nexus.nexusiam.domain.port.in.UserUseCase;
 import com.nexus.nexusiam.domain.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
@@ -15,10 +17,21 @@ import java.util.UUID;
 @Transactional
 public class UserUseCaseImpl implements UserUseCase {
     private final UserService userService;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public User create(User user) {
-        return userService.create(user);
+        Instant now = Instant.now();
+        User userWithHashedPassword = User.builder()
+                .name(user.getName())
+                .email(user.getEmail())
+                .passwordHash(passwordEncoder.encode(user.getPasswordHash()))
+                .organizationId(user.getOrganizationId())
+                .createdAt(now)
+                .updatedAt(now)
+                .active(true)
+                .build();
+        return userService.create(userWithHashedPassword);
     }
 
     @Override

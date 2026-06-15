@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
@@ -18,12 +19,27 @@ public class OrganizationUseCaseImpl implements OrganizationUseCase {
 
     @Override
     public Organization create(Organization organization) {
-        return organizationService.create(organization);
+        Instant now = Instant.now();
+        return organizationService.create(Organization.builder()
+                .name(organization.getName())
+                .slug(organization.getSlug())
+                .description(organization.getDescription())
+                .createdAt(now)
+                .updatedAt(now)
+                .active(true)
+                .build());
     }
 
     @Override
     public Organization update(UUID id, Organization organization) {
-        return organizationService.update(id, organization);
+        return organizationService.update(id, Organization.builder()
+                .id(id)
+                .name(organization.getName())
+                .slug(organization.getSlug())
+                .description(organization.getDescription())
+                .updatedAt(Instant.now())
+                .active(organization.isActive())
+                .build());
     }
 
     @Override

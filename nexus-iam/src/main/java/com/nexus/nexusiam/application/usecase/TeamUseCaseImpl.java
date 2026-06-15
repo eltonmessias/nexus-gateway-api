@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
@@ -15,21 +16,36 @@ import java.util.UUID;
 @Transactional
 public class TeamUseCaseImpl implements TeamUseCase {
     private final TeamService teamService;
+
     @Override
     public Team create(Team team) {
-        return teamService.create(team);
+        Instant now = Instant.now();
+        return teamService.create(Team.builder()
+                .name(team.getName())
+                .description(team.getDescription())
+                .organizationId(team.getOrganizationId())
+                .createdAt(now)
+                .updatedAt(now)
+                .active(true)
+                .build());
     }
 
     @Override
     public Team update(UUID id, Team team) {
-        return teamService.update(id, team);
+        return teamService.update(id, Team.builder()
+                .id(id)
+                .name(team.getName())
+                .description(team.getDescription())
+                .organizationId(team.getOrganizationId())
+                .updatedAt(Instant.now())
+                .active(team.isActive())
+                .build());
     }
 
     @Override
     public Team findById(UUID id) {
         return teamService.findById(id);
     }
-
 
     @Override
     public List<Team> findAll() {

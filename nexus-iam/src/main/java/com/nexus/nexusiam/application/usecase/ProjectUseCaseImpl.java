@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
@@ -18,12 +19,27 @@ public class ProjectUseCaseImpl implements ProjectUseCase {
 
     @Override
     public Project create(Project project) {
-        return projectService.create(project);
+        Instant now = Instant.now();
+        return projectService.create(Project.builder()
+                .name(project.getName())
+                .description(project.getDescription())
+                .teamId(project.getTeamId())
+                .createdAt(now)
+                .updatedAt(now)
+                .active(true)
+                .build());
     }
 
     @Override
     public Project update(UUID id, Project project) {
-        return projectService.update(id, project);
+        return projectService.update(id, Project.builder()
+                .id(id)
+                .name(project.getName())
+                .description(project.getDescription())
+                .teamId(project.getTeamId())
+                .updatedAt(Instant.now())
+                .active(project.isActive())
+                .build());
     }
 
     @Override
