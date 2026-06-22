@@ -33,6 +33,21 @@ public class JwtService {
                 .compact();
     }
 
+    public String generateClientToken(String clientId, java.util.UUID clientUUID, String organizationId, String projectId) {
+        return Jwts.builder()
+                .subject(clientId)
+                .claims(Map.of(
+                        "clientId", clientUUID.toString(),
+                        "organizationId", organizationId,
+                        "projectId", projectId,
+                        "type", "client_access"
+                ))
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + jwtProperties.getExpiration()))
+                .signWith(getSignInKey())
+                .compact();
+    }
+
     public String generateRefreshToken(String email) {
         return Jwts.builder()
                 .subject(email)

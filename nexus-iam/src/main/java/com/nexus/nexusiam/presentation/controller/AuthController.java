@@ -1,12 +1,15 @@
 package com.nexus.nexusiam.presentation.controller;
 
+import com.nexus.nexusiam.application.usecase.ApiClientTokenUseCaseImpl;
 import com.nexus.nexusiam.application.usecase.RegisterUseCaseImpl;
 import com.nexus.nexusiam.domain.port.out.UserRepository;
 import com.nexus.nexusiam.infrastructure.security.JwtProperties;
 import com.nexus.nexusiam.infrastructure.security.JwtService;
+import com.nexus.nexusiam.presentation.dto.request.ApiClientTokenRequest;
 import com.nexus.nexusiam.presentation.dto.request.LoginRequest;
 import com.nexus.nexusiam.presentation.dto.request.RefreshTokenRequest;
 import com.nexus.nexusiam.presentation.dto.request.RegisterRequest;
+import com.nexus.nexusiam.presentation.dto.response.ApiClientTokenResponse;
 import com.nexus.nexusiam.presentation.dto.response.AuthResponse;
 import com.nexus.nexusiam.presentation.dto.response.RegisterResponse;
 import jakarta.validation.Valid;
@@ -27,6 +30,7 @@ public class AuthController {
     private final JwtProperties jwtProperties;
     private final UserRepository userRepository;
     private final RegisterUseCaseImpl registerUseCaseImpl;
+    private final ApiClientTokenUseCaseImpl apiClientTokenUseCaseImpl;
 
     @PostMapping("/register")
     public ResponseEntity<RegisterResponse> register(@Valid @RequestBody RegisterRequest request) {
@@ -57,6 +61,11 @@ public class AuthController {
                 jwtProperties.getExpiration(),
                 jwtProperties.getRefreshExpiration()
         ));
+    }
+
+    @PostMapping("/token")
+    public ResponseEntity<ApiClientTokenResponse> token(@Valid @RequestBody ApiClientTokenRequest request) {
+        return ResponseEntity.ok(apiClientTokenUseCaseImpl.execute(request));
     }
 
     @PostMapping("/refresh")

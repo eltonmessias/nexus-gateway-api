@@ -5,15 +5,7 @@ import com.nexus.nexuscommons.exception.FlagNotFoundException;
 import com.nexus.nexuscommons.exception.JobNotFoundException;
 import com.nexus.nexuscommons.exception.NexusException;
 import com.nexus.nexuscommons.exception.RateLimitException;
-import com.nexus.nexusiam.domain.exception.IamException;
-import com.nexus.nexusiam.domain.exception.EmailAlreadyExistsException;
-import com.nexus.nexusiam.domain.exception.InvalidCredentialsException;
-import com.nexus.nexusiam.domain.exception.OrganizationNotFoundException;
-import com.nexus.nexusiam.domain.exception.ProjectNotFoundException;
-import com.nexus.nexusiam.domain.exception.SlugAlreadyExistsException;
-import com.nexus.nexusiam.domain.exception.TeamNotFoundException;
-import com.nexus.nexusiam.domain.exception.TokenExpiredException;
-import com.nexus.nexusiam.domain.exception.UserNotFoundException;
+import com.nexus.nexusiam.domain.exception.*;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.security.SignatureException;
@@ -95,6 +87,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, Object>> handleGeneric(Exception ex) {
         return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_ERROR", "An unexpected error occurred");
+    }
+
+    @ExceptionHandler(ApiClientNotFoundException.class)
+    public ResponseEntity<Map<String, Object>> handleApiClientNotFound(IamException ex) {
+        return buildResponse(HttpStatus.NOT_FOUND, ex.getCode(), ex.getMessage());
     }
 
     private ResponseEntity<Map<String, Object>> buildResponse(HttpStatus status, String code, String message) {
