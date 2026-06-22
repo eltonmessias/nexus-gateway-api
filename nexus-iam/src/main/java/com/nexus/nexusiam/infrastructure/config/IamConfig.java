@@ -1,13 +1,7 @@
 package com.nexus.nexusiam.infrastructure.config;
 
-import com.nexus.nexusiam.domain.port.out.OrganizationRepository;
-import com.nexus.nexusiam.domain.port.out.ProjectRepository;
-import com.nexus.nexusiam.domain.port.out.TeamRepository;
-import com.nexus.nexusiam.domain.port.out.UserRepository;
-import com.nexus.nexusiam.domain.service.OrganizationService;
-import com.nexus.nexusiam.domain.service.ProjectService;
-import com.nexus.nexusiam.domain.service.TeamService;
-import com.nexus.nexusiam.domain.service.UserService;
+import com.nexus.nexusiam.domain.port.out.*;
+import com.nexus.nexusiam.domain.service.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -32,5 +26,10 @@ public class IamConfig {
     @Bean
     public ProjectService projectService(ProjectRepository projectRepository) {
         return new ProjectService(projectRepository);
+    }
+
+    @Bean
+    public ApiClientService apiClientService(ApiClientRepository apiClientRepository) {
+        return new ApiClientService(apiClientRepository);
     }
 }
