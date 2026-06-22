@@ -2,9 +2,8 @@ package com.nexus.nexusiam.domain.exception;
 
 import java.util.UUID;
 
-public class OrganizationNotFoundException extends RuntimeException {
+public class OrganizationNotFoundException extends IamException {
     public OrganizationNotFoundException(UUID id) {
-
-      super("Organization not found with id " + id);
+        super("USER_NOT_FOUND", "User not found with id: " + id);
     }
 }

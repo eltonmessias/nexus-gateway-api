@@ -1,8 +1,10 @@
 package com.nexus.nexusiam.presentation.dto.response;
 
 public record AuthResponse(
-        String token,
+        String accessToken,
+        String refreshToken,
         String email,
-        long expiresIn
+        long accessTokenExpiresIn,
+        long refreshTokenExpiresIn
 ) {
 }

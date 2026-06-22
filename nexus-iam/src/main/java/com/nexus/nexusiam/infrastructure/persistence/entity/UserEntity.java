@@ -1,5 +1,6 @@
 package com.nexus.nexusiam.infrastructure.persistence.entity;
 
+import com.nexus.nexusiam.domain.model.Role;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -23,6 +24,10 @@ public class UserEntity {
     private String passwordHash;
 
     private UUID organizationId;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Role role;
 
     @Column(nullable = false)
     private Instant createdAt;

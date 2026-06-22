@@ -46,4 +46,9 @@ public class OrganizationRepositoryAdapter implements OrganizationRepository {
     public Boolean existsById(UUID id) {
         return jpaRepository.existsById(id);
     }
+
+    @Override
+    public boolean existsBySlug(String slug) {
+        return jpaRepository.existsBySlug(slug);
+    }
 }

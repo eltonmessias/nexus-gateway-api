@@ -18,17 +18,33 @@ public class JwtService {
 
     private final JwtProperties jwtProperties;
 
-    public String generateToken(String email, UUID userId, String organizationId) {
+    public String generateToken(String email, UUID userId, String organizationId, String role) {
         return Jwts.builder()
                 .subject(email)
                 .claims(Map.of(
                         "userId", userId.toString(),
-                        "organizationId", organizationId
+                        "organizationId", organizationId,
+                        "role", role,
+                        "type", "access"
                 ))
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + jwtProperties.getExpiration()))
                 .signWith(getSignInKey())
                 .compact();
+    }
+
+    public String generateRefreshToken(String email) {
+        return Jwts.builder()
+                .subject(email)
+                .claims(Map.of("type", "refresh"))
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + jwtProperties.getRefreshExpiration()))
+                .signWith(getSignInKey())
+                .compact();
+    }
+
+    public boolean isRefreshToken(String token) {
+        return "refresh".equals(extractClaim(token, claims -> claims.get("type", String.class)));
     }
 
     public String extractEmail(String token) {
@@ -37,6 +53,10 @@ public class JwtService {
 
     public UUID extractUserId(String token) {
         return UUID.fromString(extractClaim(token, claims -> claims.get("userId", String.class)));
+    }
+
+    public String extractRole(String token) {
+        return extractClaim(token, claims -> claims.get("role", String.class));
     }
 
     public boolean isTokenValid(String token, String email) {
@@ -58,7 +78,6 @@ public class JwtService {
                 .parseSignedClaims(token)
                 .getPayload();
     }
-
 
     private SecretKey getSignInKey() {
         return Keys.hmacShaKeyFor(jwtProperties.getSecret().getBytes());

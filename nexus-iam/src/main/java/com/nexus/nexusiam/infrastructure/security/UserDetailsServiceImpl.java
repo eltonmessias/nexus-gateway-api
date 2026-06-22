@@ -1,6 +1,5 @@
 package com.nexus.nexusiam.infrastructure.security;
 
-
 import com.nexus.nexusiam.domain.port.out.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.User;
@@ -12,6 +11,7 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class UserDetailsServiceImpl implements UserDetailsService {
+
     private final UserRepository userRepository;
 
     @Override
@@ -20,7 +20,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 .map(user -> User.builder()
                         .username(user.getEmail().getValue())
                         .password(user.getPasswordHash())
-                        .roles("USER")
+                        .roles(user.getRole().name())
                         .build())
                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + email));
     }

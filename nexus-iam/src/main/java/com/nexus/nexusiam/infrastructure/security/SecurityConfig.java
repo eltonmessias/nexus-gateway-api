@@ -32,7 +32,6 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/iam/auth/**", "/actuator/**").permitAll()
-                        .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/iam/organizations", "/api/iam/users").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session

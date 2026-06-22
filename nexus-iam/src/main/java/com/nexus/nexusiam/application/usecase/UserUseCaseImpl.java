@@ -1,5 +1,6 @@
 package com.nexus.nexusiam.application.usecase;
 
+import com.nexus.nexusiam.domain.model.Role;
 import com.nexus.nexusiam.domain.model.User;
 import com.nexus.nexusiam.domain.port.in.UserUseCase;
 import com.nexus.nexusiam.domain.service.UserService;
@@ -27,6 +28,7 @@ public class UserUseCaseImpl implements UserUseCase {
                 .email(user.getEmail())
                 .passwordHash(passwordEncoder.encode(user.getPasswordHash()))
                 .organizationId(user.getOrganizationId())
+                .role(user.getRole() != null ? user.getRole() : Role.VIEWER)
                 .createdAt(now)
                 .updatedAt(now)
                 .active(true)

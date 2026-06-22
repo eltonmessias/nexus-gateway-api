@@ -1,6 +1,8 @@
 package com.nexus.nexusiam.domain.port.out;
 
 import com.nexus.nexusiam.domain.model.User;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,4 +17,6 @@ public interface UserRepository {
     List<User> findAll();
     void deleteById(UUID id);
     boolean existsById(UUID id);
+
+    boolean existsByEmail(String email);
 }

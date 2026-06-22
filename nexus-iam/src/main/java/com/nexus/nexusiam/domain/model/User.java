@@ -19,6 +19,7 @@ public class User {
     private String name;
     private String passwordHash;
     private UUID organizationId;
+    private Role role;
     private Instant createdAt;
     private Instant updatedAt;
     private boolean active;
