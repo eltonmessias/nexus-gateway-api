@@ -58,8 +58,12 @@ public class JwtService {
                 .compact();
     }
 
+    public String extractTokenType(String token) {
+        return extractClaim(token, claims -> claims.get("type", String.class));
+    }
+
     public boolean isRefreshToken(String token) {
-        return "refresh".equals(extractClaim(token, claims -> claims.get("type", String.class)));
+        return "refresh".equals(extractTokenType(token));
     }
 
     public String extractEmail(String token) {
