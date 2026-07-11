@@ -6,7 +6,7 @@ import lombok.*;
 import java.util.UUID;
 
 @Entity
-@Table(name = "flags")
+@Table(name = "flags", schema = "nexus_flags")
 @Getter
 @Setter
 @NoArgsConstructor

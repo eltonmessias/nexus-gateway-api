@@ -16,7 +16,7 @@ import java.util.UUID;
 
 
 @Entity
-@Table(name = "jobs")
+@Table(name = "jobs", schema = "nexus_jobs")
 @Getter
 @Setter
 @NoArgsConstructor

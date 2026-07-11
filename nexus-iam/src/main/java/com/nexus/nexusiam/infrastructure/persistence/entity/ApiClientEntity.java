@@ -7,7 +7,7 @@ import java.time.Instant;
 import java.util.UUID;
 
 @Entity
-@Table(name = "api_clients")
+@Table(name = "api_clients", schema = "nexus_iam")
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
 public class ApiClientEntity {
     @Id

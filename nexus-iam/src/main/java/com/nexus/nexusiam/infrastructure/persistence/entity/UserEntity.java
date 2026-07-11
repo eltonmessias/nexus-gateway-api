@@ -8,7 +8,7 @@ import java.time.Instant;
 import java.util.UUID;
 
 @Entity
-@Table(name = "users")
+@Table(name = "users", schema = "nexus_iam")
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
 public class UserEntity {
     @Id

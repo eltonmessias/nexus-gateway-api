@@ -31,7 +31,8 @@ public class SecurityConfig {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/iam/auth/**", "/actuator/**").permitAll()
+                        .requestMatchers("/api/iam/auth/**", "/actuator/**",
+                                "/swagger-ui.html", "/swagger-ui/**", "/api-docs/**").permitAll()
                         .requestMatchers("/api/iam/**").hasAnyRole("ORG_OWNER", "TEAM_ADMIN", "TEAM_MEMBER", "VIEWER")
                         .anyRequest().authenticated()
                 )

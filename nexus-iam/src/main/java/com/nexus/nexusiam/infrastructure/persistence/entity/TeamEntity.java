@@ -7,7 +7,7 @@ import java.time.Instant;
 import java.util.UUID;
 
 @Entity
-@Table(name = "teams")
+@Table(name = "teams", schema = "nexus_iam")
 @Getter @Setter @AllArgsConstructor
 @NoArgsConstructor @Builder
 public class TeamEntity {

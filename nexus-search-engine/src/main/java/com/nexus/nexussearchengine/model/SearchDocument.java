@@ -1,67 +1,46 @@
 package com.nexus.nexussearchengine.model;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.elasticsearch.annotations.Document;
+import jakarta.persistence.*;
+import lombok.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
+import java.time.Instant;
 import java.util.Map;
+import java.util.UUID;
 
-@Document(indexName = "documents")
+@Entity
+@Table(name = "search_documents", schema = "nexus_search")
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class SearchDocument {
+
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
+
+    @Column(nullable = false)
     private String title;
+
+    @Column(nullable = false, columnDefinition = "text")
     private String content;
+
+    @Column(name = "index_name", nullable = false)
     private String indexName;
+
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(columnDefinition = "jsonb")
     private Map<String, Object> metadata;
 
-    public SearchDocument() {
-    }
+    @Column(name = "org_id")
+    private UUID orgId;
 
-    public SearchDocument(String id, String title, String content, String indexName, Map<String, Object> metadata) {
-        this.id = id;
-        this.title = title;
-        this.content = content;
-        this.indexName = indexName;
-        this.metadata = metadata;
-    }
+    @Column(name = "created_at", nullable = false)
+    private Instant createdAt;
 
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public String getIndexName() {
-        return indexName;
-    }
-
-    public void setIndexName(String indexName) {
-        this.indexName = indexName;
-    }
-
-    public Map<String, Object> getMetadata() {
-        return metadata;
-    }
-
-    public void setMetadata(Map<String, Object> metadata) {
-        this.metadata = metadata;
-    }
+    @Column(name = "updated_at", nullable = false)
+    private Instant updatedAt;
 }
