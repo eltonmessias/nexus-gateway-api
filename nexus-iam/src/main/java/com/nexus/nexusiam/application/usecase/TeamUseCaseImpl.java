@@ -1,5 +1,6 @@
 package com.nexus.nexusiam.application.usecase;
 
+import com.nexus.nexuscommons.dto.response.PagedResult;
 import com.nexus.nexusiam.domain.model.Team;
 import com.nexus.nexusiam.domain.port.in.TeamUseCase;
 import com.nexus.nexusiam.domain.service.TeamService;
@@ -8,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
-import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -48,8 +48,8 @@ public class TeamUseCaseImpl implements TeamUseCase {
     }
 
     @Override
-    public List<Team> findAll() {
-        return teamService.findAll();
+    public PagedResult<Team> findAll(int page, int size) {
+        return teamService.findAll(page, size);
     }
 
     @Override

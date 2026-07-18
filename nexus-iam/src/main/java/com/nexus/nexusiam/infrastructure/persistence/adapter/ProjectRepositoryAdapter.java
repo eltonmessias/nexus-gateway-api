@@ -5,6 +5,7 @@ import com.nexus.nexusiam.domain.port.out.ProjectRepository;
 import com.nexus.nexusiam.infrastructure.mapper.ProjectMapper;
 import com.nexus.nexusiam.infrastructure.persistence.repository.ProjectJpaRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -42,6 +43,16 @@ public class ProjectRepositoryAdapter implements ProjectRepository {
     @Override
     public List<Project> findAll() {
         return jpaRepository.findAll().stream().map(mapper::toDomain).toList();
+    }
+
+    @Override
+    public List<Project> findAll(int page, int size) {
+        return jpaRepository.findAll(PageRequest.of(page, size)).stream().map(mapper::toDomain).toList();
+    }
+
+    @Override
+    public long count() {
+        return jpaRepository.count();
     }
 
     @Override

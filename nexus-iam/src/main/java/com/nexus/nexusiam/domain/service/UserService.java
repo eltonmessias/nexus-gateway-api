@@ -1,10 +1,8 @@
 package com.nexus.nexusiam.domain.service;
 
-import com.nexus.nexusiam.domain.exception.OrganizationNotFoundException;
+import com.nexus.nexuscommons.dto.response.PagedResult;
 import com.nexus.nexusiam.domain.exception.UserNotFoundException;
 import com.nexus.nexusiam.domain.model.User;
-import com.nexus.nexusiam.domain.port.in.UserUseCase;
-import com.nexus.nexusiam.domain.port.out.OrganizationRepository;
 import com.nexus.nexusiam.domain.port.out.UserRepository;
 import lombok.RequiredArgsConstructor;
 
@@ -30,6 +28,12 @@ public class UserService {
 
     public List<User> findAll() {
         return userRepository.findAll();
+    }
+
+    public PagedResult<User> findAll(int page, int size) {
+        List<User> content = userRepository.findAll(page, size);
+        long total = userRepository.count();
+        return PagedResult.of(content, page, size, total);
     }
 
     public void delete(UUID id) {

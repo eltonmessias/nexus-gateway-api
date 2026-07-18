@@ -1,8 +1,8 @@
 package com.nexus.nexusiam.domain.service;
 
+import com.nexus.nexuscommons.dto.response.PagedResult;
 import com.nexus.nexusiam.domain.exception.TeamNotFoundException;
 import com.nexus.nexusiam.domain.model.Team;
-import com.nexus.nexusiam.domain.port.in.TeamUseCase;
 import com.nexus.nexusiam.domain.port.out.TeamRepository;
 import lombok.RequiredArgsConstructor;
 
@@ -28,6 +28,12 @@ public class TeamService {
 
     public List<Team> findAll() {
         return teamRepository.findAll();
+    }
+
+    public PagedResult<Team> findAll(int page, int size) {
+        List<Team> content = teamRepository.findAll(page, size);
+        long total = teamRepository.count();
+        return PagedResult.of(content, page, size, total);
     }
 
     public void delete(UUID id) {

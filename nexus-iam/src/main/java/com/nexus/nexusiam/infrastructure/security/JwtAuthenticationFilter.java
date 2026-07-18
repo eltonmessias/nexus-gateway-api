@@ -32,6 +32,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
     private final ApiClientRepository apiClientRepository;
+    private final TokenBlacklistService tokenBlacklistService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -47,6 +48,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         final String token = authHeader.substring(7);
 
         try {
+            if (tokenBlacklistService.isRevoked(token)) {
+                writeErrorResponse(response, HttpStatus.UNAUTHORIZED, "TOKEN_REVOKED", "Token has been revoked");
+                return;
+            }
+
             String tokenType = jwtService.extractTokenType(token);
 
             if ("refresh".equals(tokenType)) {

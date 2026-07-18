@@ -1,5 +1,6 @@
 package com.nexus.nexusiam.application.usecase;
 
+import com.nexus.nexuscommons.dto.response.PagedResult;
 import com.nexus.nexusiam.domain.model.Organization;
 import com.nexus.nexusiam.domain.port.in.OrganizationUseCase;
 import com.nexus.nexusiam.domain.service.OrganizationService;
@@ -8,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
-import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -48,8 +48,8 @@ public class OrganizationUseCaseImpl implements OrganizationUseCase {
     }
 
     @Override
-    public List<Organization> findAll() {
-        return organizationService.findAll();
+    public PagedResult<Organization> findAll(int page, int size) {
+        return organizationService.findAll(page, size);
     }
 
     @Override

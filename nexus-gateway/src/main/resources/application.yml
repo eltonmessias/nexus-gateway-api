@@ -1,14 +1,19 @@
 server:
-  port: 8080
+  port: ${SERVER_PORT:8080}
+  ssl:
+    enabled: ${SSL_ENABLED:false}
+    key-store: ${SSL_KEYSTORE_PATH:}
+    key-store-password: ${SSL_KEYSTORE_PASSWORD:}
+    key-store-type: ${SSL_KEYSTORE_TYPE:PKCS12}
 
 spring:
   application:
     name: nexus-gateway
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/nexus
-    username: nexus
-    password: nexus_dev
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/nexus}
+    username: ${DB_USERNAME:nexus}
+    password: ${DB_PASSWORD:nexus_dev}
     driver-class-name: org.postgresql.Driver
 
   jpa:
@@ -20,31 +25,34 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
     open-in-view: false
 
-
   flyway:
     enabled: false
 
   kafka:
-    bootstrap-servers: localhost:9092
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    consumer:
+      group-id: ${KAFKA_CONSUMER_GROUP:nexus-job-queue}
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "com.nexus.nexuscommons.event"
 
   data:
     redis:
-      host: localhost
-      port: 6379
-
-
-
-
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
 
 nexus:
   security:
     jwt:
-      secret: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
-      expiration: 900000
-      refresh-expiration: 604800000
+      secret: ${JWT_SECRET:404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970}
+      expiration: ${JWT_EXPIRATION:900000}
+      refresh-expiration: ${JWT_REFRESH_EXPIRATION:604800000}
 
 logging:
   level:
@@ -52,8 +60,6 @@ logging:
     org.springframework: WARN
     org.flywaydb: DEBUG
     org.springframework.boot.autoconfigure.flyway: DEBUG
-
-
 
 springdoc:
   api-docs:

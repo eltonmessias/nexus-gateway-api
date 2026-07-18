@@ -46,6 +46,25 @@ public class ApiClientService {
         apiClientRepository.deleteById(id);
     }
 
+    public String rotateApiKey(UUID id, String newApiKeyHash) {
+        ApiClient client = findById(id);
+        ApiClient updated = ApiClient.builder()
+                .id(client.getId())
+                .name(client.getName())
+                .projectId(client.getProjectId())
+                .organizationId(client.getOrganizationId())
+                .clientId(client.getClientId())
+                .apiKeyHash(newApiKeyHash)
+                .rateLimitRpm(client.getRateLimitRpm())
+                .rateLimitBurst(client.getRateLimitBurst())
+                .active(client.isActive())
+                .createdAt(client.getCreatedAt())
+                .updatedAt(Instant.now())
+                .build();
+        apiClientRepository.save(updated);
+        return newApiKeyHash;
+    }
+
     public void deactivate(UUID id) {
         ApiClient client = findById(id);
         ApiClient deactivated = ApiClient.builder()

@@ -1,5 +1,6 @@
 package com.nexus.nexusiam.application.usecase;
 
+import com.nexus.nexuscommons.dto.response.PagedResult;
 import com.nexus.nexusiam.domain.model.Role;
 import com.nexus.nexusiam.domain.model.User;
 import com.nexus.nexusiam.domain.port.in.UserUseCase;
@@ -10,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
-import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -47,8 +47,8 @@ public class UserUseCaseImpl implements UserUseCase {
     }
 
     @Override
-    public List<User> findAll() {
-        return userService.findAll();
+    public PagedResult<User> findAll(int page, int size) {
+        return userService.findAll(page, size);
     }
 
     @Override

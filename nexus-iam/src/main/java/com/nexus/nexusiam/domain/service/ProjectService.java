@@ -1,9 +1,9 @@
 package com.nexus.nexusiam.domain.service;
 
+import com.nexus.nexuscommons.dto.response.PagedResult;
 import com.nexus.nexusiam.domain.exception.ProjectNotFoundException;
 import com.nexus.nexusiam.domain.exception.TeamNotFoundException;
 import com.nexus.nexusiam.domain.model.Project;
-import com.nexus.nexusiam.domain.port.in.ProjectUseCase;
 import com.nexus.nexusiam.domain.port.out.ProjectRepository;
 import lombok.RequiredArgsConstructor;
 
@@ -33,6 +33,12 @@ public class ProjectService {
 
     public List<Project> findAll() {
         return projectRepository.findAll();
+    }
+
+    public PagedResult<Project> findAll(int page, int size) {
+        List<Project> content = projectRepository.findAll(page, size);
+        long total = projectRepository.count();
+        return PagedResult.of(content, page, size, total);
     }
 
     public void delete(UUID id) {

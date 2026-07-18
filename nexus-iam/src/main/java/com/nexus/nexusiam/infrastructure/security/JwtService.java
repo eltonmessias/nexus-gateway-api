@@ -48,6 +48,20 @@ public class JwtService {
                 .compact();
     }
 
+    public String generateClientRefreshToken(String clientId) {
+        return Jwts.builder()
+                .subject(clientId)
+                .claims(Map.of("type", "client_refresh"))
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + jwtProperties.getRefreshExpiration()))
+                .signWith(getSignInKey())
+                .compact();
+    }
+
+    public boolean isClientRefreshToken(String token) {
+        return "client_refresh".equals(extractTokenType(token));
+    }
+
     public String generateRefreshToken(String email) {
         return Jwts.builder()
                 .subject(email)
@@ -80,6 +94,10 @@ public class JwtService {
 
     public boolean isTokenValid(String token, String email) {
         return extractEmail(token).equals(email) && !isTokenExpired(token);
+    }
+
+    public Date extractExpiration(String token) {
+        return extractClaim(token, Claims::getExpiration);
     }
 
     private boolean isTokenExpired(String token) {

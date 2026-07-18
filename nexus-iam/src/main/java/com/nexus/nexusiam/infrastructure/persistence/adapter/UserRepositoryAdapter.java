@@ -5,6 +5,7 @@ import com.nexus.nexusiam.domain.port.out.UserRepository;
 import com.nexus.nexusiam.infrastructure.mapper.UserMapper;
 import com.nexus.nexusiam.infrastructure.persistence.repository.UserJpaRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -45,6 +46,16 @@ public class UserRepositoryAdapter implements UserRepository {
     @Override
     public List<User> findAll() {
         return jpaRepository.findAll().stream().map(mapper::toDomain).toList();
+    }
+
+    @Override
+    public List<User> findAll(int page, int size) {
+        return jpaRepository.findAll(PageRequest.of(page, size)).stream().map(mapper::toDomain).toList();
+    }
+
+    @Override
+    public long count() {
+        return jpaRepository.count();
     }
 
     @Override

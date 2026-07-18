@@ -1,8 +1,8 @@
 package com.nexus.nexusiam.domain.service;
 
+import com.nexus.nexuscommons.dto.response.PagedResult;
 import com.nexus.nexusiam.domain.exception.OrganizationNotFoundException;
 import com.nexus.nexusiam.domain.model.Organization;
-import com.nexus.nexusiam.domain.port.in.OrganizationUseCase;
 import com.nexus.nexusiam.domain.port.out.OrganizationRepository;
 import lombok.RequiredArgsConstructor;
 
@@ -28,6 +28,12 @@ public class OrganizationService {
 
     public List<Organization> findAll() {
         return organizationRepository.findAll();
+    }
+
+    public PagedResult<Organization> findAll(int page, int size) {
+        List<Organization> content = organizationRepository.findAll(page, size);
+        long total = organizationRepository.count();
+        return PagedResult.of(content, page, size, total);
     }
 
     public void delete(UUID id) {

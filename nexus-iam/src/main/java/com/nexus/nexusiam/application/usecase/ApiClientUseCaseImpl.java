@@ -5,9 +5,12 @@ import com.nexus.nexusiam.domain.model.ApiClient;
 import com.nexus.nexusiam.domain.port.in.ApiClientUseCase;
 import com.nexus.nexusiam.domain.service.ApiClientService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.security.SecureRandom;
+import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
 
@@ -17,6 +20,7 @@ import java.util.UUID;
 public class ApiClientUseCaseImpl implements ApiClientUseCase {
 
     private final ApiClientService apiClientService;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public ApiClient create(ApiClient apiClient) {
@@ -56,5 +60,18 @@ public class ApiClientUseCaseImpl implements ApiClientUseCase {
     @Override
     public void deactivate(UUID id) {
         apiClientService.deactivate(id);
+    }
+
+    @Override
+    public String rotateApiKey(UUID id) {
+        String newApiKey = generateApiKey();
+        apiClientService.rotateApiKey(id, passwordEncoder.encode(newApiKey));
+        return newApiKey;
+    }
+
+    private String generateApiKey() {
+        byte[] bytes = new byte[32];
+        new SecureRandom().nextBytes(bytes);
+        return "nexus_live_" + Base64.getUrlEncoder().withoutPadding().encodeToString(bytes);
     }
 }

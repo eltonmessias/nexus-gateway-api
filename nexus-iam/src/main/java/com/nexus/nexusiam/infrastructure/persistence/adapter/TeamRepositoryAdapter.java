@@ -5,6 +5,7 @@ import com.nexus.nexusiam.domain.port.out.TeamRepository;
 import com.nexus.nexusiam.infrastructure.mapper.TeamMapper;
 import com.nexus.nexusiam.infrastructure.persistence.repository.TeamJpaRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -37,6 +38,16 @@ public class TeamRepositoryAdapter implements TeamRepository {
     @Override
     public List<Team> findAll() {
         return jpaRepository.findAll().stream().map(mapper::toDomain).toList();
+    }
+
+    @Override
+    public List<Team> findAll(int page, int size) {
+        return jpaRepository.findAll(PageRequest.of(page, size)).stream().map(mapper::toDomain).toList();
+    }
+
+    @Override
+    public long count() {
+        return jpaRepository.count();
     }
 
     @Override

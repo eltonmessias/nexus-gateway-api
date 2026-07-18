@@ -13,6 +13,8 @@ public interface OrganizationRepository {
     Optional<Organization> findById(UUID id);
     Optional<Organization> findBySlug(String slug);
     List<Organization> findAll();
+    List<Organization> findAll(int page, int size);
+    long count();
     void deleteById(UUID id);
     Boolean existsById(UUID id);
 

@@ -42,10 +42,14 @@ public class ApiClientTokenUseCaseImpl {
                 client.getProjectId().toString()
         );
 
+        String refreshToken = jwtService.generateClientRefreshToken(client.getClientId());
+
         return new ApiClientTokenResponse(
                 accessToken,
+                refreshToken,
                 client.getClientId(),
-                jwtProperties.getExpiration()
+                jwtProperties.getExpiration(),
+                jwtProperties.getRefreshExpiration()
         );
     }
 }

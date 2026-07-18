@@ -1,8 +1,8 @@
 package com.nexus.nexusiam.domain.port.in;
 
+import com.nexus.nexuscommons.dto.response.PagedResult;
 import com.nexus.nexusiam.domain.model.Project;
 
-import java.util.List;
 import java.util.UUID;
 
 public interface ProjectUseCase {
@@ -10,7 +10,6 @@ public interface ProjectUseCase {
     Project update(UUID id, Project project);
     Project findById(UUID id);
     Project findByName(String name);
-    List<Project> findAll();
+    PagedResult<Project> findAll(int page, int size);
     void delete(UUID id);
-
 }

@@ -1,5 +1,6 @@
 package com.nexus.nexusiam.application.usecase;
 
+import com.nexus.nexuscommons.dto.response.PagedResult;
 import com.nexus.nexusiam.domain.model.Project;
 import com.nexus.nexusiam.domain.port.in.ProjectUseCase;
 import com.nexus.nexusiam.domain.service.ProjectService;
@@ -8,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
-import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -53,8 +53,8 @@ public class ProjectUseCaseImpl implements ProjectUseCase {
     }
 
     @Override
-    public List<Project> findAll() {
-        return projectService.findAll();
+    public PagedResult<Project> findAll(int page, int size) {
+        return projectService.findAll(page, size);
     }
 
     @Override

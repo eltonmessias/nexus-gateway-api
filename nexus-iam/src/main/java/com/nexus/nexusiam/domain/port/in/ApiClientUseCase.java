@@ -14,4 +14,5 @@ public interface ApiClientUseCase {
     ApiClient update(UUID id, ApiClient apiClient);
     void delete(UUID id);
     void deactivate(UUID id);
+    String rotateApiKey(UUID id);
 }

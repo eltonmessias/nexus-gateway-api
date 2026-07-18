@@ -15,6 +15,8 @@ public interface UserRepository {
     Optional<User> findByEmail(String email);
     List<User> findAllByOrganizationId(UUID organizationId);
     List<User> findAll();
+    List<User> findAll(int page, int size);
+    long count();
     void deleteById(UUID id);
     boolean existsById(UUID id);
 
