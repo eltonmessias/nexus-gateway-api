@@ -1,6 +1,7 @@
 package com.nexus.nexusiam.application.usecase;
 
 
+import com.nexus.nexuscommons.dto.response.PagedResult;
 import com.nexus.nexusiam.domain.model.ApiClient;
 import com.nexus.nexusiam.domain.port.in.ApiClientUseCase;
 import com.nexus.nexusiam.domain.service.ApiClientService;
@@ -45,6 +46,13 @@ public class ApiClientUseCaseImpl implements ApiClientUseCase {
     @Override
     public List<ApiClient> findAllByProjectId(UUID projectId) {
         return apiClientService.findAllByProjectId(projectId);
+    }
+
+    @Override
+    public PagedResult<ApiClient> findAll(int page, int size) {
+        long total = apiClientService.count();
+        List<ApiClient> clients = apiClientService.findAll(page, size);
+        return PagedResult.of(clients, page, size, total);
     }
 
     @Override

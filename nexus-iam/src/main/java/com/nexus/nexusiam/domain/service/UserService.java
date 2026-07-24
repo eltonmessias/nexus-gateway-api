@@ -6,6 +6,7 @@ import com.nexus.nexusiam.domain.model.User;
 import com.nexus.nexusiam.domain.port.out.UserRepository;
 import lombok.RequiredArgsConstructor;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
@@ -39,5 +40,20 @@ public class UserService {
     public void delete(UUID id) {
         userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
         userRepository.deleteById(id);
+    }
+
+    public User setActive(UUID id, boolean active) {
+        User existing = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
+        return userRepository.save(User.builder()
+                .id(existing.getId())
+                .email(existing.getEmail())
+                .name(existing.getName())
+                .passwordHash(existing.getPasswordHash())
+                .organizationId(existing.getOrganizationId())
+                .role(existing.getRole())
+                .createdAt(existing.getCreatedAt())
+                .updatedAt(Instant.now())
+                .active(active)
+                .build());
     }
 }

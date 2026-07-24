@@ -22,7 +22,9 @@ public class ProjectUseCaseImpl implements ProjectUseCase {
         Instant now = Instant.now();
         return projectService.create(Project.builder()
                 .name(project.getName())
+                .key(project.getKey())
                 .description(project.getDescription())
+                .organizationId(project.getOrganizationId())
                 .teamId(project.getTeamId())
                 .createdAt(now)
                 .updatedAt(now)
@@ -35,11 +37,23 @@ public class ProjectUseCaseImpl implements ProjectUseCase {
         return projectService.update(id, Project.builder()
                 .id(id)
                 .name(project.getName())
+                .key(project.getKey())
                 .description(project.getDescription())
+                .organizationId(project.getOrganizationId())
                 .teamId(project.getTeamId())
                 .updatedAt(Instant.now())
                 .active(project.isActive())
                 .build());
+    }
+
+    @Override
+    public PagedResult<Project> findByOrganizationId(UUID organizationId, int page, int size) {
+        return projectService.findByOrganizationId(organizationId, page, size);
+    }
+
+    @Override
+    public PagedResult<Project> findByTeamId(UUID teamId, int page, int size) {
+        return projectService.findByTeamId(teamId, page, size);
     }
 
     @Override

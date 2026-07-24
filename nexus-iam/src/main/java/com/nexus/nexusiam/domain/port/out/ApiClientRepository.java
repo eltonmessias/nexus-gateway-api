@@ -12,6 +12,8 @@ public interface ApiClientRepository {
     Optional<ApiClient> findByClientId(String clientId);
     List<ApiClient> findAllByOrganizationId(UUID organizationId);
     List<ApiClient> findAllByProjectId(UUID projectId);
+    List<ApiClient> findAll(int page, int size);
+    long count();
     void deleteById(UUID id);
     boolean existsByClientId(String clientId);
 }

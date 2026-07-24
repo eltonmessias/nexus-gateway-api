@@ -15,6 +15,8 @@ public class FlywayConfig {
                 .dataSource(dataSource)
                 .locations("classpath:db/migration")
                 .schemas("public")
+                .baselineOnMigrate(true)
+                .baselineVersion("0")
                 .validateOnMigrate(false)
                 .outOfOrder(false)
                 .load();

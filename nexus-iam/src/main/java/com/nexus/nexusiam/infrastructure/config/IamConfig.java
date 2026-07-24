@@ -32,4 +32,12 @@ public class IamConfig {
     public ApiClientService apiClientService(ApiClientRepository apiClientRepository) {
         return new ApiClientService(apiClientRepository);
     }
+
+    @Bean
+    public TeamMemberService teamMemberService(
+            TeamMemberRepository teamMemberRepository,
+            TeamRepository teamRepository,
+            OrgMemberRepository orgMemberRepository) {
+        return new TeamMemberService(teamMemberRepository, teamRepository, orgMemberRepository);
+    }
 }

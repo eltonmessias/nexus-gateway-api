@@ -1,5 +1,6 @@
 package com.nexus.nexusiam.infrastructure.persistence.adapter;
 
+import com.nexus.nexusiam.domain.model.Role;
 import com.nexus.nexusiam.domain.model.User;
 import com.nexus.nexusiam.domain.port.out.UserRepository;
 import com.nexus.nexusiam.infrastructure.mapper.UserMapper;
@@ -71,5 +72,10 @@ public class UserRepositoryAdapter implements UserRepository {
     @Override
     public boolean existsByEmail(String email) {
         return jpaRepository.existsByEmail(email);
+    }
+
+    @Override
+    public boolean existsByRole(Role role) {
+        return jpaRepository.existsByRole(role);
     }
 }

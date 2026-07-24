@@ -7,9 +7,11 @@ import com.nexus.nexuscommons.exception.FlagNotFoundException;
 import com.nexus.nexusfeatureflags.model.Flag;
 import com.nexus.nexusfeatureflags.repository.FlagRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -25,25 +27,27 @@ public class FlagServiceImpl implements FlagService {
     }
 
     @Override
-    public FlagEvaluateResponse evaluate(String flagKey, String environment) {
-
-        Optional<Object> cachedFlag = cacheService.get(CacheKeyUtil.forFlag(flagKey));
-        if (cachedFlag.isPresent()) {
-            Flag cached = (Flag) cachedFlag.get();
-            return new FlagEvaluateResponse(cached.getFlagKey(), cached.getValue(), "Evaluated");
+    public FlagEvaluateResponse evaluate(String key) {
+        Optional<Object> cached = cacheService.get(CacheKeyUtil.forFlag(key));
+        if (cached.isPresent()) {
+            Flag flag = (Flag) cached.get();
+            return new FlagEvaluateResponse(flag.getKey(), flag.isEnabled(),
+                    flag.isEnabled() ? "FLAG_ENABLED" : "FLAG_DISABLED");
         }
-        Flag flag = flagRepository.findByFlagKeyAndEnvironment(flagKey, environment).orElseThrow(() -> new FlagNotFoundException(flagKey));
 
-        cacheService.set(CacheKeyUtil.forFlag(flagKey), flag);
-        return new FlagEvaluateResponse(
-                flagKey,
-                flag.getValue(),
-                "Evaluated"
-        );
+        return flagRepository.findByKey(key)
+                .map(flag -> {
+                    cacheService.set(CacheKeyUtil.forFlag(key), flag);
+                    return new FlagEvaluateResponse(flag.getKey(), flag.isEnabled(),
+                            flag.isEnabled() ? "FLAG_ENABLED" : "FLAG_DISABLED");
+                })
+                .orElse(new FlagEvaluateResponse(key, false, "FLAG_NOT_FOUND"));
     }
 
     @Override
     public Flag create(Flag flag) {
+        flag.setCreatedAt(Instant.now());
+        flag.setUpdatedAt(Instant.now());
         return flagRepository.save(flag);
     }
 
@@ -53,23 +57,51 @@ public class FlagServiceImpl implements FlagService {
     }
 
     @Override
-    public Flag update(UUID id, Flag flag) {
-        Flag oldFlag = flagRepository.findById(id).orElseThrow(() -> new FlagNotFoundException("Flag not found"));
-        oldFlag.setFlagKey(flag.getFlagKey());
-        oldFlag.setEnvironment(flag.getEnvironment());
-        oldFlag.setEnabled(flag.isEnabled());
-        oldFlag.setValue(flag.getValue());
-        flagRepository.save(oldFlag);
-        return oldFlag;
+    public Flag update(UUID id, String description) {
+        Flag flag = flagRepository.findById(id).orElseThrow(() -> new FlagNotFoundException(id.toString()));
+        flag.setDescription(description);
+        flag.setUpdatedAt(Instant.now());
+        cacheService.delete(CacheKeyUtil.forFlag(flag.getKey()));
+        return flagRepository.save(flag);
+    }
+
+    @Override
+    public Flag enable(UUID id) {
+        Flag flag = flagRepository.findById(id).orElseThrow(() -> new FlagNotFoundException(id.toString()));
+        flag.setEnabled(true);
+        flag.setUpdatedAt(Instant.now());
+        cacheService.delete(CacheKeyUtil.forFlag(flag.getKey()));
+        return flagRepository.save(flag);
+    }
+
+    @Override
+    public Flag disable(UUID id) {
+        Flag flag = flagRepository.findById(id).orElseThrow(() -> new FlagNotFoundException(id.toString()));
+        flag.setEnabled(false);
+        flag.setUpdatedAt(Instant.now());
+        cacheService.delete(CacheKeyUtil.forFlag(flag.getKey()));
+        return flagRepository.save(flag);
     }
 
     @Override
     public void delete(UUID id) {
+        Flag flag = flagRepository.findById(id).orElseThrow(() -> new FlagNotFoundException(id.toString()));
+        cacheService.delete(CacheKeyUtil.forFlag(flag.getKey()));
         flagRepository.deleteById(id);
     }
 
     @Override
-    public List<Flag> findAll() {
-        return flagRepository.findAll();
+    public Page<Flag> findAll(Pageable pageable) {
+        return flagRepository.findAll(pageable);
+    }
+
+    @Override
+    public Page<Flag> findAllByOrganizationId(UUID organizationId, Pageable pageable) {
+        return flagRepository.findAllByOrganizationId(organizationId, pageable);
+    }
+
+    @Override
+    public Page<Flag> findAllByProjectId(UUID projectId, Pageable pageable) {
+        return flagRepository.findAllByProjectId(projectId, pageable);
     }
 }

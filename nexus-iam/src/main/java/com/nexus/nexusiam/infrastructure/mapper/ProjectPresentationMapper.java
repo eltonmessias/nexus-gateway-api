@@ -13,6 +13,7 @@ public interface ProjectPresentationMapper {
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "active", constant = "true")
+    @Mapping(target = "teamId", source = "teamId")
     Project toDomain(ProjectRequest request);
 
     ProjectResponse toResponse(Project domain);

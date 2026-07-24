@@ -29,6 +29,9 @@ public class AuditLogEntity {
     @Column(name = "actor_id")
     private String actorId;
 
+    @Column(name = "actor_name", length = 255)
+    private String actorName;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "actor_type", nullable = false, length = 20)
     private ActorType actorType;

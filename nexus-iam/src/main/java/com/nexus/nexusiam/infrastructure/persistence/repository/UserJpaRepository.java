@@ -1,5 +1,6 @@
 package com.nexus.nexusiam.infrastructure.persistence.repository;
 
+import com.nexus.nexusiam.domain.model.Role;
 import com.nexus.nexusiam.infrastructure.persistence.entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -12,4 +13,5 @@ public interface UserJpaRepository extends JpaRepository<UserEntity, UUID> {
     Optional<UserEntity> findByName(String name);
     List<UserEntity> findAllByOrganizationId(UUID organizationId);
     boolean existsByEmail(String email);
+    boolean existsByRole(Role role);
 }

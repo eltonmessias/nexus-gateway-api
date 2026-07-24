@@ -10,6 +10,8 @@ public interface TeamRepository {
     Team save(Team team);
     Optional<Team> findById(UUID id);
     List<Team> findByOrganizationId(UUID organizationId);
+    List<Team> findByOrganizationId(UUID organizationId, int page, int size);
+    long countByOrganizationId(UUID organizationId);
     List<Team> findAll();
     List<Team> findAll(int page, int size);
     long count();

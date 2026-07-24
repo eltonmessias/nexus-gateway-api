@@ -1,6 +1,7 @@
 package com.nexus.nexusiam.presentation.controller;
 
 import com.nexus.nexusiam.application.usecase.ApiClientTokenUseCaseImpl;
+import com.nexus.nexusiam.application.usecase.BootstrapUseCaseImpl;
 import com.nexus.nexusiam.application.usecase.RegisterUseCaseImpl;
 import com.nexus.nexusiam.infrastructure.security.TokenBlacklistService;
 import com.nexus.nexusiam.domain.model.ActorType;
@@ -13,11 +14,13 @@ import com.nexus.nexusiam.domain.model.ApiClient;
 import com.nexus.nexusiam.domain.port.out.ApiClientRepository;
 import com.nexus.nexusiam.presentation.dto.request.ApiClientRefreshRequest;
 import com.nexus.nexusiam.presentation.dto.request.ApiClientTokenRequest;
+import com.nexus.nexusiam.presentation.dto.request.BootstrapRequest;
 import com.nexus.nexusiam.presentation.dto.request.LoginRequest;
 import com.nexus.nexusiam.presentation.dto.request.RefreshTokenRequest;
 import com.nexus.nexusiam.presentation.dto.request.RegisterRequest;
 import com.nexus.nexusiam.presentation.dto.response.ApiClientTokenResponse;
 import com.nexus.nexusiam.presentation.dto.response.AuthResponse;
+import com.nexus.nexusiam.presentation.dto.response.BootstrapStatusResponse;
 import com.nexus.nexusiam.presentation.dto.response.RegisterResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -39,6 +42,7 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "Authentication", description = "User and API client authentication")
 public class AuthController {
 
+    private final BootstrapUseCaseImpl bootstrapUseCase;
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
     private final JwtProperties jwtProperties;
@@ -49,6 +53,23 @@ public class AuthController {
     private final AuditLogService auditLogService;
     private final TokenBlacklistService tokenBlacklistService;
 
+    @Operation(summary = "Check if initial setup is required")
+    @GetMapping("/setup/status")
+    public ResponseEntity<BootstrapStatusResponse> setupStatus() {
+        return ResponseEntity.ok(new BootstrapStatusResponse(bootstrapUseCase.isSetupRequired()));
+    }
+
+    @Operation(summary = "Create the first system admin — only works once, before any ADMIN exists")
+    @ApiResponses({
+        @ApiResponse(responseCode = "201", description = "Admin created, tokens returned"),
+        @ApiResponse(responseCode = "403", description = "System already configured"),
+        @ApiResponse(responseCode = "409", description = "Email already in use")
+    })
+    @PostMapping("/setup")
+    public ResponseEntity<AuthResponse> setup(@Valid @RequestBody BootstrapRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(bootstrapUseCase.execute(request));
+    }
+
     @Operation(summary = "Register organization + owner")
     @ApiResponses({
         @ApiResponse(responseCode = "201", description = "Organization and owner created"),
@@ -58,7 +79,7 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<RegisterResponse> register(@Valid @RequestBody RegisterRequest request, HttpServletRequest httpRequest) {
         RegisterResponse response = registerUseCaseImpl.execute(request);
-        auditLogService.log(AuditAction.USER_REGISTERED, response.ownerId().toString(), ActorType.SYSTEM,
+        auditLogService.log(AuditAction.USER_REGISTERED, response.ownerId().toString(), response.ownerEmail(), ActorType.SYSTEM,
                 response.organizationId(), "ORGANIZATION", response.organizationId().toString(),
                 java.util.Map.of("ownerEmail", response.ownerEmail(), "organizationSlug", response.organizationSlug()),
                 httpRequest.getRemoteAddr());
@@ -77,7 +98,7 @@ public class AuthController {
                     new UsernamePasswordAuthenticationToken(request.email(), request.password())
             );
         } catch (BadCredentialsException e) {
-            auditLogService.log(AuditAction.USER_LOGIN_FAILED, request.email(), ActorType.USER,
+            auditLogService.log(AuditAction.USER_LOGIN_FAILED, request.email(), request.email(), ActorType.USER,
                     null, "USER", null,
                     java.util.Map.of("email", request.email()),
                     httpRequest.getRemoteAddr());
@@ -95,7 +116,7 @@ public class AuthController {
 
         String refreshToken = jwtService.generateRefreshToken(user.getEmail().getValue());
 
-        auditLogService.log(AuditAction.USER_LOGIN, user.getId().toString(), ActorType.USER,
+        auditLogService.log(AuditAction.USER_LOGIN, user.getId().toString(), user.getName(), ActorType.USER,
                 user.getOrganizationId(), "USER", user.getId().toString(),
                 java.util.Map.of("email", user.getEmail().getValue()),
                 httpRequest.getRemoteAddr());
@@ -103,9 +124,9 @@ public class AuthController {
         return ResponseEntity.ok(new AuthResponse(
                 accessToken,
                 refreshToken,
-                user.getEmail().getValue(),
-                jwtProperties.getExpiration(),
-                jwtProperties.getRefreshExpiration()
+                "Bearer",
+                jwtProperties.getExpiration() / 1000,
+                jwtProperties.getRefreshExpiration() / 1000
         ));
     }
 
@@ -128,7 +149,7 @@ public class AuthController {
     @PostMapping("/token")
     public ResponseEntity<ApiClientTokenResponse> token(@Valid @RequestBody ApiClientTokenRequest request, HttpServletRequest httpRequest) {
         ApiClientTokenResponse response = apiClientTokenUseCaseImpl.execute(request);
-        auditLogService.log(AuditAction.API_CLIENT_TOKEN_ISSUED, request.clientId(), ActorType.API_CLIENT,
+        auditLogService.log(AuditAction.API_CLIENT_TOKEN_ISSUED, request.clientId(), request.clientId(), ActorType.API_CLIENT,
                 null, "API_CLIENT", request.clientId(),
                 java.util.Map.of("clientId", request.clientId()),
                 httpRequest.getRemoteAddr());
@@ -203,9 +224,9 @@ public class AuthController {
         return ResponseEntity.ok(new AuthResponse(
                 newAccessToken,
                 newRefreshToken,
-                user.getEmail().getValue(),
-                jwtProperties.getExpiration(),
-                jwtProperties.getRefreshExpiration()
+                "Bearer",
+                jwtProperties.getExpiration() / 1000,
+                jwtProperties.getRefreshExpiration() / 1000
         ));
     }
 }

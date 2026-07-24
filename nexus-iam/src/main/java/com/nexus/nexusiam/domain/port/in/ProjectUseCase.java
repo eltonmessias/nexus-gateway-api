@@ -11,5 +11,7 @@ public interface ProjectUseCase {
     Project findById(UUID id);
     Project findByName(String name);
     PagedResult<Project> findAll(int page, int size);
+    PagedResult<Project> findByOrganizationId(UUID organizationId, int page, int size);
+    PagedResult<Project> findByTeamId(UUID teamId, int page, int size);
     void delete(UUID id);
 }

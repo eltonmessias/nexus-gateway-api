@@ -30,8 +30,30 @@ public class ProjectRepositoryAdapter implements ProjectRepository {
     }
 
     @Override
-    public List<Project> findByTeamId(UUID teamId) {
-        return jpaRepository.findAllByTeamId(teamId).stream().map(mapper::toDomain).toList();
+    public List<Project> findByOrganizationId(UUID organizationId) {
+        return jpaRepository.findAllByOrganizationId(organizationId).stream().map(mapper::toDomain).toList();
+    }
+
+    @Override
+    public List<Project> findByOrganizationId(UUID organizationId, int page, int size) {
+        return jpaRepository.findAllByOrganizationId(organizationId, PageRequest.of(page, size))
+                .stream().map(mapper::toDomain).toList();
+    }
+
+    @Override
+    public long countByOrganizationId(UUID organizationId) {
+        return jpaRepository.countByOrganizationId(organizationId);
+    }
+
+    @Override
+    public List<Project> findByTeamId(UUID teamId, int page, int size) {
+        return jpaRepository.findAllByTeamId(teamId, PageRequest.of(page, size))
+                .stream().map(mapper::toDomain).toList();
+    }
+
+    @Override
+    public long countByTeamId(UUID teamId) {
+        return jpaRepository.countByTeamId(teamId);
     }
 
     @Override

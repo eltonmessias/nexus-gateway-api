@@ -55,4 +55,9 @@ public class UserUseCaseImpl implements UserUseCase {
     public void delete(UUID id) {
         userService.delete(id);
     }
+
+    @Override
+    public User setActive(UUID id, boolean active) {
+        return userService.setActive(id, active);
+    }
 }

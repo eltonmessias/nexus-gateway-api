@@ -36,6 +36,14 @@ public class ApiClientService {
         return apiClientRepository.findAllByProjectId(projectId);
     }
 
+    public List<ApiClient> findAll(int page, int size) {
+        return apiClientRepository.findAll(page, size);
+    }
+
+    public long count() {
+        return apiClientRepository.count();
+    }
+
     public ApiClient update(UUID id, ApiClient apiClient) {
         apiClientRepository.findById(id).orElseThrow(() -> new ApiClientNotFoundException(id));
         return apiClientRepository.save(apiClient);

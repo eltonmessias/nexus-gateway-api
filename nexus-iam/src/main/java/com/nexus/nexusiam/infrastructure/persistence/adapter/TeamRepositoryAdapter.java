@@ -34,6 +34,17 @@ public class TeamRepositoryAdapter implements TeamRepository {
         return jpaRepository.findAllByOrganizationId(organizationId).stream().map(mapper::toDomain).toList();
     }
 
+    @Override
+    public List<Team> findByOrganizationId(UUID organizationId, int page, int size) {
+        return jpaRepository.findAllByOrganizationId(organizationId, PageRequest.of(page, size))
+                .stream().map(mapper::toDomain).toList();
+    }
+
+    @Override
+    public long countByOrganizationId(UUID organizationId) {
+        return jpaRepository.countByOrganizationId(organizationId);
+    }
+
 
     @Override
     public List<Team> findAll() {

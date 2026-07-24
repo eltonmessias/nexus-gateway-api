@@ -21,6 +21,7 @@ public class AuditLogService {
     @Async
     public void log(AuditAction action,
                     String actorId,
+                    String actorName,
                     ActorType actorType,
                     UUID organizationId,
                     String resourceType,
@@ -30,6 +31,7 @@ public class AuditLogService {
         auditLogJpaRepository.save(AuditLogEntity.builder()
                 .action(action.name())
                 .actorId(actorId)
+                .actorName(actorName)
                 .actorType(actorType)
                 .organizationId(organizationId)
                 .resourceType(resourceType)

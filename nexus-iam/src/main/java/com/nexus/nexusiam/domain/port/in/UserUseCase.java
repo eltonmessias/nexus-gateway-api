@@ -11,4 +11,5 @@ public interface UserUseCase {
     User findById(UUID id);
     PagedResult<User> findAll(int page, int size);
     void delete(UUID id);
+    User setActive(UUID id, boolean active);
 }

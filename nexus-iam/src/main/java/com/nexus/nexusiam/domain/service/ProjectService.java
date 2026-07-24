@@ -2,7 +2,6 @@ package com.nexus.nexusiam.domain.service;
 
 import com.nexus.nexuscommons.dto.response.PagedResult;
 import com.nexus.nexusiam.domain.exception.ProjectNotFoundException;
-import com.nexus.nexusiam.domain.exception.TeamNotFoundException;
 import com.nexus.nexusiam.domain.model.Project;
 import com.nexus.nexusiam.domain.port.out.ProjectRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,8 +18,20 @@ public class ProjectService {
     }
 
     public Project update(UUID id, Project project) {
-        projectRepository.findById(id).orElseThrow(() -> new TeamNotFoundException(id));
+        projectRepository.findById(id).orElseThrow(() -> new ProjectNotFoundException(id));
         return projectRepository.save(project);
+    }
+
+    public PagedResult<Project> findByTeamId(UUID teamId, int page, int size) {
+        List<Project> content = projectRepository.findByTeamId(teamId, page, size);
+        long total = projectRepository.countByTeamId(teamId);
+        return PagedResult.of(content, page, size, total);
+    }
+
+    public PagedResult<Project> findByOrganizationId(UUID organizationId, int page, int size) {
+        List<Project> content = projectRepository.findByOrganizationId(organizationId, page, size);
+        long total = projectRepository.countByOrganizationId(organizationId);
+        return PagedResult.of(content, page, size, total);
     }
 
     public Project findById(UUID id) {

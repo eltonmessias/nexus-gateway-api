@@ -6,9 +6,12 @@ import com.nexus.nexuscommons.exception.JobNotFoundException;
 import com.nexus.nexuscommons.exception.NexusException;
 import com.nexus.nexuscommons.exception.RateLimitException;
 import com.nexus.nexusiam.domain.exception.*;
+import org.springframework.dao.DataIntegrityViolationException;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.security.SignatureException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -25,6 +28,8 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+
     @ExceptionHandler({FlagNotFoundException.class, JobNotFoundException.class, ClientNotFoundException.class})
     public ResponseEntity<Map<String, Object>> handleNotFound(NexusException ex) {
         return buildResponse(HttpStatus.NOT_FOUND, ex.getCode(), ex.getMessage());
@@ -39,6 +44,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({EmailAlreadyExistsException.class, SlugAlreadyExistsException.class})
     public ResponseEntity<Map<String, Object>> handleIamConflict(IamException ex) {
         return buildResponse(HttpStatus.CONFLICT, ex.getCode(), ex.getMessage());
+    }
+
+    @ExceptionHandler(ForbiddenException.class)
+    public ResponseEntity<Map<String, Object>> handleForbidden(IamException ex) {
+        return buildResponse(HttpStatus.FORBIDDEN, ex.getCode(), ex.getMessage());
     }
 
     @ExceptionHandler({InvalidCredentialsException.class, BadCredentialsException.class})
@@ -84,9 +94,23 @@ public class GlobalExceptionHandler {
         return buildResponse(HttpStatus.NOT_FOUND, "NOT_FOUND", ex.getMessage());
     }
 
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<Map<String, Object>> handleDataIntegrity(DataIntegrityViolationException ex) {
+        String cause = ex.getMostSpecificCause().getMessage();
+        log.warn("Data integrity violation: {}", cause);
+        if (cause != null && cause.contains("uk_flags_key")) {
+            return buildResponse(HttpStatus.CONFLICT, "FLAG_KEY_EXISTS", "A flag with this key already exists");
+        }
+        if (cause != null && (cause.contains("unique") || cause.contains("duplicate"))) {
+            return buildResponse(HttpStatus.CONFLICT, "DUPLICATE", "A resource with these details already exists");
+        }
+        return buildResponse(HttpStatus.CONFLICT, "CONFLICT", cause != null ? cause : "Data integrity violation");
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, Object>> handleGeneric(Exception ex) {
-        return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_ERROR", "An unexpected error occurred");
+        log.error("Unhandled exception: {}", ex.getMessage(), ex);
+        return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_ERROR", ex.getMessage());
     }
 
     @ExceptionHandler(ApiClientNotFoundException.class)

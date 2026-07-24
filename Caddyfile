@@ -1,0 +1,6 @@
+# Caddy terminates TLS (auto Let's Encrypt) and proxies to the Spring Boot app.
+# {$API_DOMAIN} is supplied by docker-compose (e.g. api.yourdomain.com).
+{$API_DOMAIN} {
+	encode gzip
+	reverse_proxy app:8080
+}

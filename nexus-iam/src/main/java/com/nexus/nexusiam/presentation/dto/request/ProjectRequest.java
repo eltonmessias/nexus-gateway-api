@@ -7,7 +7,9 @@ import java.util.UUID;
 
 public record ProjectRequest (
         @NotBlank String name,
+        @NotBlank String key,
         String description,
-        @NotNull UUID teamId
+        @NotNull UUID organizationId,
+        UUID teamId
         ){
 }

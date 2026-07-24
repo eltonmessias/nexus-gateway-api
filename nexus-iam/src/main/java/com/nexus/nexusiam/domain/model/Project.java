@@ -15,7 +15,9 @@ import java.util.UUID;
 public class Project {
     private UUID id;
     private String name;
+    private String key;
     private String description;
+    private UUID organizationId;
     private UUID teamId;
     private Instant createdAt;
     private Instant updatedAt;

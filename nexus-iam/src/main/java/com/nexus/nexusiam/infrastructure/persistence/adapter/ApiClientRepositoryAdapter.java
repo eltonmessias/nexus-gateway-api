@@ -5,6 +5,7 @@ import com.nexus.nexusiam.domain.port.out.ApiClientRepository;
 import com.nexus.nexusiam.infrastructure.mapper.ApiClientMapper;
 import com.nexus.nexusiam.infrastructure.persistence.repository.ApiClientJpaRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -41,6 +42,16 @@ public class ApiClientRepositoryAdapter implements ApiClientRepository {
     @Override
     public List<ApiClient> findAllByProjectId(UUID projectId) {
         return jpaRepository.findAllByProjectId(projectId).stream().map(mapper::toDomain).toList();
+    }
+
+    @Override
+    public List<ApiClient> findAll(int page, int size) {
+        return jpaRepository.findAll(PageRequest.of(page, size)).stream().map(mapper::toDomain).toList();
+    }
+
+    @Override
+    public long count() {
+        return jpaRepository.count();
     }
 
     @Override

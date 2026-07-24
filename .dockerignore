@@ -1,0 +1,17 @@
+# Build output — rebuilt inside the image
+**/target/
+# IDE / local
+.idea/
+*.iml
+.vscode/
+# VCS
+.git/
+.gitignore
+# Local infra data / secrets
+infra/**/data/
+.env
+.env.*
+!.env.production.example
+# Docs / misc
+*.md
+!README.md

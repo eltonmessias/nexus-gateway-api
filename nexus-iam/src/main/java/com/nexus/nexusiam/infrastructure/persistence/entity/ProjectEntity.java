@@ -20,7 +20,12 @@ public class ProjectEntity {
 
     private String description;
 
+    @Column(nullable = false, unique = true)
+    private String key;
+
     @Column(nullable = false)
+    private UUID organizationId;
+
     private UUID teamId;
 
     @Column(nullable = false)

@@ -1,5 +1,6 @@
 package com.nexus.nexusiam.domain.port.out;
 
+import com.nexus.nexusiam.domain.model.Role;
 import com.nexus.nexusiam.domain.model.User;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -21,4 +22,5 @@ public interface UserRepository {
     boolean existsById(UUID id);
 
     boolean existsByEmail(String email);
+    boolean existsByRole(Role role);
 }

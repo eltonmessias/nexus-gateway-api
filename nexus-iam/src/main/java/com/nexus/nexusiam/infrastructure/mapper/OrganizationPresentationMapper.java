@@ -28,7 +28,7 @@ public interface OrganizationPresentationMapper {
 
     @Named("slugToString")
     default String slugToString(Slug slug){
-        return slug == null ? null : slug.toString();
+        return slug == null ? null : slug.getValue();
     }
 
 

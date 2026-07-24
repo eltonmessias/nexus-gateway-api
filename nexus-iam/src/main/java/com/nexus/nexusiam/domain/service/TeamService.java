@@ -36,6 +36,12 @@ public class TeamService {
         return PagedResult.of(content, page, size, total);
     }
 
+    public PagedResult<Team> findByOrganizationId(UUID organizationId, int page, int size) {
+        List<Team> content = teamRepository.findByOrganizationId(organizationId, page, size);
+        long total = teamRepository.countByOrganizationId(organizationId);
+        return PagedResult.of(content, page, size, total);
+    }
+
     public void delete(UUID id) {
         teamRepository.findById(id).orElseThrow(() -> new TeamNotFoundException(id));
         teamRepository.deleteById(id);

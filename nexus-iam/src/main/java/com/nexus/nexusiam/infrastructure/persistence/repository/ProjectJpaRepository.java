@@ -8,6 +8,10 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface ProjectJpaRepository extends JpaRepository<ProjectEntity, UUID> {
-    List<ProjectEntity> findAllByTeamId(UUID teamId);
+    List<ProjectEntity> findAllByOrganizationId(UUID organizationId);
+    org.springframework.data.domain.Page<ProjectEntity> findAllByOrganizationId(UUID organizationId, org.springframework.data.domain.Pageable pageable);
+    long countByOrganizationId(UUID organizationId);
     Optional<ProjectEntity> findByName(String name);
+    org.springframework.data.domain.Page<ProjectEntity> findAllByTeamId(UUID teamId, org.springframework.data.domain.Pageable pageable);
+    long countByTeamId(UUID teamId);
 }

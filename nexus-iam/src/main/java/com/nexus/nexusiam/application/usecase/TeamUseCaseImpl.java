@@ -53,6 +53,11 @@ public class TeamUseCaseImpl implements TeamUseCase {
     }
 
     @Override
+    public PagedResult<Team> findByOrganizationId(UUID organizationId, int page, int size) {
+        return teamService.findByOrganizationId(organizationId, page, size);
+    }
+
+    @Override
     public void delete(UUID id) {
         teamService.delete(id);
     }
