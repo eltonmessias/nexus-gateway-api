@@ -19,4 +19,6 @@ public class OrgMember {
     private OrgMemberStatus status;
     private Instant joinedAt;
     private Instant updatedAt;
+    private String inviteToken;
+    private Instant inviteExpiresAt;
 }

@@ -41,4 +41,9 @@ public class OrgMemberEntity {
 
     @Column(nullable = false)
     private Instant updatedAt;
+
+    @Column(unique = true)
+    private String inviteToken;
+
+    private Instant inviteExpiresAt;
 }

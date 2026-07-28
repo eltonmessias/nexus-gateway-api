@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.UUID;
 
@@ -39,6 +40,8 @@ public class OrgMemberUseCaseImpl implements OrgMemberUseCase {
             throw new IllegalStateException("Member with email " + email + " already exists in this organisation");
         }
         Instant now = Instant.now();
+        String inviteToken = UUID.randomUUID().toString().replace("-", "")
+                + UUID.randomUUID().toString().replace("-", "");
         OrgMember member = OrgMember.builder()
                 .organizationId(organizationId)
                 .name(name != null ? name : email.split("@")[0])
@@ -47,6 +50,8 @@ public class OrgMemberUseCaseImpl implements OrgMemberUseCase {
                 .status(OrgMemberStatus.INVITED)
                 .joinedAt(now)
                 .updatedAt(now)
+                .inviteToken(inviteToken)
+                .inviteExpiresAt(now.plus(7, ChronoUnit.DAYS))
                 .build();
         return orgMemberRepository.save(member);
     }
@@ -72,6 +77,8 @@ public class OrgMemberUseCaseImpl implements OrgMemberUseCase {
                 .status(existing.getStatus())
                 .joinedAt(existing.getJoinedAt())
                 .updatedAt(Instant.now())
+                .inviteToken(existing.getInviteToken())
+                .inviteExpiresAt(existing.getInviteExpiresAt())
                 .build();
         return orgMemberRepository.save(updated);
     }

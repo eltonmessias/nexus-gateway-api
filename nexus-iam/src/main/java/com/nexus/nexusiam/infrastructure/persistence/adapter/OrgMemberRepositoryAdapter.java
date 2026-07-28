@@ -29,6 +29,11 @@ public class OrgMemberRepositoryAdapter implements OrgMemberRepository {
     }
 
     @Override
+    public Optional<OrgMember> findByInviteToken(String inviteToken) {
+        return jpaRepository.findByInviteToken(inviteToken).map(mapper::toDomain);
+    }
+
+    @Override
     public List<OrgMember> findAllByOrganizationId(UUID organizationId) {
         return jpaRepository.findAllByOrganizationId(organizationId).stream().map(mapper::toDomain).toList();
     }

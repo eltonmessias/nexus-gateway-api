@@ -3,6 +3,7 @@ package com.nexus.nexusiam.presentation.controller;
 import com.nexus.nexusiam.application.usecase.OrgMemberUseCaseImpl;
 import com.nexus.nexusiam.presentation.dto.request.OrgMemberInviteRequest;
 import com.nexus.nexusiam.presentation.dto.request.OrgMemberRoleRequest;
+import com.nexus.nexusiam.presentation.dto.response.OrgMemberInviteResponse;
 import com.nexus.nexusiam.presentation.dto.response.OrgMemberResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -34,11 +35,11 @@ public class OrgMemberController {
 
     @Operation(summary = "Invite a member to an organisation")
     @PostMapping("/organization/{organizationId}/invite")
-    public ResponseEntity<OrgMemberResponse> invite(
+    public ResponseEntity<OrgMemberInviteResponse> invite(
             @PathVariable UUID organizationId,
             @Valid @RequestBody OrgMemberInviteRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(
-                OrgMemberResponse.from(orgMemberUseCase.invite(
+                OrgMemberInviteResponse.from(orgMemberUseCase.invite(
                         organizationId, request.name(), request.email(), request.role()))
         );
     }
